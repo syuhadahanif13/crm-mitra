@@ -1,4 +1,12 @@
-import { CustomerProfile, GoldInstallmentContract, InstallmentScheduleItem, StockOpnameRecord, CrmNotification } from '../types';
+import { 
+  CustomerProfile, 
+  GoldInstallmentContract, 
+  InstallmentScheduleItem, 
+  StockOpnameRecord, 
+  CrmNotification,
+  CrmBrandConfig,
+  MitraDashboardTransaction 
+} from '../types';
 import { INITIAL_CUSTOMERS, INITIAL_CONTRACTS, INITIAL_STOCK_OPNAME_RECORDS, INITIAL_CRM_NOTIFICATIONS } from '../data/mockCrmData';
 import { sendWhatsAppMessage, WHATSAPP_TARGETS } from './fonnteService';
 
@@ -7,7 +15,124 @@ const STORAGE_KEYS = {
   CONTRACTS: 'crm_standalone_contracts_v1',
   STOCK_OPNAME: 'crm_standalone_stock_opname_v1',
   NOTIFICATIONS: 'crm_standalone_notifications_v1',
+  BRAND_CONFIG: 'crm_custom_branding_v1',
+  IMPORTED_TRANSACTIONS: 'crm_imported_mitra_transactions_v1',
 };
+
+export const DEFAULT_BRAND_CONFIG: CrmBrandConfig = {
+  brandName: 'Raja Emas CRM',
+  tagline: 'Sistem Pembiayaan & Cicilan Emas',
+  logoType: 'preset',
+  presetIcon: 'gold-ring',
+  accentTheme: 'purple-indigo',
+};
+
+export const INITIAL_MITRA_TRANSACTIONS: MitraDashboardTransaction[] = [
+  {
+    id: 'trx-mitra-001',
+    invoiceNumber: 'INV-REI/2026/10/0042',
+    date: '2026-10-01',
+    partnerId: 'partner-bprs-himbarsi-01',
+    partnerName: 'BPRS Harta Insan Karimah (HIK)',
+    partnerCategory: 'BPRS',
+    customerName: 'Ibu Aini',
+    customerPhone: '081298765432',
+    customerAddress: 'Jl. Melati No. 42, RT 03/RW 05, Kebayoran Baru, Jakarta Selatan',
+    goldWeightGrams: 10,
+    totalPrice: 25625000,
+    paymentMethod: 'Pembiayaan Akad Cicilan 1 Tahun',
+    status: 'Completed',
+    source: 'Dasbor Mitra Raja Emas',
+  },
+  {
+    id: 'trx-mitra-002',
+    invoiceNumber: 'INV-REI/2026/09/0088',
+    date: '2026-09-25',
+    partnerId: 'partner-bprs-himbarsi-01',
+    partnerName: 'BPRS Harta Insan Karimah (HIK)',
+    partnerCategory: 'BPRS',
+    customerName: 'Bpk. Bambang Pamungkas',
+    customerPhone: '081288991234',
+    customerAddress: 'Jl. Mawar No. 15, Menteng, Jakarta Pusat',
+    goldWeightGrams: 5,
+    totalPrice: 12877500,
+    paymentMethod: 'Pembiayaan Akad Cicilan 6 Bulan',
+    status: 'Completed',
+    source: 'Dasbor Mitra Raja Emas',
+  },
+  {
+    id: 'trx-mitra-003',
+    invoiceNumber: 'INV-REI/2026/10/0105',
+    date: '2026-10-02',
+    partnerId: 'partner-bank-dki-syariah',
+    partnerName: 'Bank DKI Unit Usaha Syariah',
+    partnerCategory: 'Bank',
+    customerName: 'Ibu Siti Khodijah',
+    customerPhone: '081377889900',
+    customerAddress: 'Jl. Anggrek No. 8, Cilandak, Jakarta Selatan',
+    goldWeightGrams: 25,
+    totalPrice: 63937500,
+    paymentMethod: 'Pembiayaan Akad Cicilan 2 Tahun',
+    status: 'Completed',
+    source: 'Dasbor Mitra Raja Emas',
+  },
+  {
+    id: 'trx-mitra-004',
+    invoiceNumber: 'INV-REI/2026/10/0112',
+    date: '2026-10-03',
+    partnerId: 'partner-kop-syariah-212',
+    partnerName: 'Koperasi Syariah 212',
+    partnerCategory: 'Koperasi Syariah',
+    customerName: 'Bpk. Hendra Wijaya',
+    customerPhone: '081122334455',
+    customerAddress: 'Jl. Dahlia No. 12, Kelapa Gading, Jakarta Utara',
+    goldWeightGrams: 2,
+    totalPrice: 5171000,
+    paymentMethod: 'Transfer Virtual Account BSI',
+    status: 'Completed',
+    source: 'Dasbor Mitra Raja Emas',
+  },
+];
+
+export const loadCrmBrandConfig = (): CrmBrandConfig => {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEYS.BRAND_CONFIG);
+    if (!raw) return DEFAULT_BRAND_CONFIG;
+    return { ...DEFAULT_BRAND_CONFIG, ...JSON.parse(raw) };
+  } catch (e) {
+    return DEFAULT_BRAND_CONFIG;
+  }
+};
+
+export const saveCrmBrandConfig = (config: CrmBrandConfig): void => {
+  try {
+    localStorage.setItem(STORAGE_KEYS.BRAND_CONFIG, JSON.stringify(config));
+  } catch (e) {
+    console.error('Failed to save CRM brand config:', e);
+  }
+};
+
+export const loadMitraImportedTransactions = (): MitraDashboardTransaction[] => {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEYS.IMPORTED_TRANSACTIONS);
+    if (!raw) {
+      localStorage.setItem(STORAGE_KEYS.IMPORTED_TRANSACTIONS, JSON.stringify(INITIAL_MITRA_TRANSACTIONS));
+      return INITIAL_MITRA_TRANSACTIONS;
+    }
+    return JSON.parse(raw);
+  } catch (e) {
+    return INITIAL_MITRA_TRANSACTIONS;
+  }
+};
+
+export const saveMitraImportedTransactions = (trxs: MitraDashboardTransaction[]): void => {
+  try {
+    localStorage.setItem(STORAGE_KEYS.IMPORTED_TRANSACTIONS, JSON.stringify(trxs));
+  } catch (e) {
+    console.error('Failed to save imported mitra transactions:', e);
+  }
+};
+
 
 // ─────────────────────────────────────────────────────────────
 // LOCAL STORAGE PERSISTENCE

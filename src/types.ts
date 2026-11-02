@@ -128,3 +128,30 @@ export interface CrmNotification {
   read: boolean;
   channel: 'WhatsApp Fonnte' | 'Sistem CRM' | 'Email';
 }
+
+export interface CrmBrandConfig {
+  brandName: string;
+  tagline: string;
+  logoUrl?: string; // Base64 or image URL
+  logoType: 'image' | 'preset';
+  presetIcon: 'gold-ring' | 'crown' | 'gem' | 'shield' | 'coins';
+  accentTheme: 'purple-indigo' | 'amber-gold' | 'emerald-teal' | 'blue-cyan';
+}
+
+export interface MitraDashboardTransaction {
+  id: string;
+  invoiceNumber: string;
+  date: string;
+  partnerId: string;
+  partnerName: string;
+  partnerCategory: PartnerCategory;
+  customerName: string;
+  customerPhone?: string;
+  customerAddress?: string;
+  goldWeightGrams: number;
+  totalPrice: number;
+  paymentMethod: string;
+  status: 'Completed' | 'Pending' | 'Shipped';
+  source: 'Dasbor Mitra Raja Emas' | 'Manual CRM';
+}
+
