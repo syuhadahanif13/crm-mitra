@@ -1,10 +1,12 @@
-const FONNTE_TOKEN = 'gkmNVWdLWCfuwXMZFqzN';
-const FONNTE_API_URL = 'https://api.fonnte.com/send';
+const FONNTE_TOKEN =
+  (import.meta as any).env?.VITE_FONNTE_TOKEN || 'gkmNVWdLWCfuwXMZFqzN';
+const FONNTE_API_URL =
+  (import.meta as any).env?.VITE_FONNTE_API_URL || 'https://api.fonnte.com/send';
 
 // Nomor tujuan notifikasi internal REI & BPRS
 export const WHATSAPP_TARGETS: string[] = [
-  '6281802180003', // Aini Marketing REI
-  '628151612592',  // Hanif IT
+  (import.meta as any).env?.VITE_ADMIN_WA_MARKETING || '6281802180003', // Aini Marketing REI
+  (import.meta as any).env?.VITE_ADMIN_WA_IT || '628151612592',         // Hanif IT
 ];
 
 export async function sendWhatsAppMessage(target: string, message: string): Promise<boolean> {
