@@ -8,7 +8,7 @@ import {
   Send,
   Building2,
   FileCheck2,
-  Sparkles
+  CheckCircle2
 } from 'lucide-react';
 import { CustomerProfile, GoldInstallmentContract, UserSession } from '../types';
 import { formatRupiah, formatGrams } from '../utils/formatters';
@@ -319,10 +319,10 @@ export const AddManualTransactionModal: React.FC<AddManualTransactionModalProps>
             </div>
           </div>
 
-          {/* Section 2: Gold Spec & Installment Parameters (Case 2: 10g 1 Tahun) */}
+          {/* Section 2: Gold Spec & Installment Parameters */}
           <div className="p-4 rounded-2xl bg-slate-50 dark:bg-gray-800/40 border border-slate-200 dark:border-gray-800 space-y-3">
             <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-gray-300">
-              2. Parameter Pembiayaan Emas (Case 2: 10g 1 Tahun)
+              2. Parameter Pembiayaan Emas
             </h4>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
@@ -336,7 +336,7 @@ export const AddManualTransactionModal: React.FC<AddManualTransactionModalProps>
                   <option value={1}>1 Gram</option>
                   <option value={2}>2 Gram</option>
                   <option value={5}>5 Gram</option>
-                  <option value={10}>10 Gram (Case 2: Aini)</option>
+                  <option value={10}>10 Gram</option>
                   <option value={25}>25 Gram</option>
                   <option value={50}>50 Gram</option>
                   <option value={100}>100 Gram</option>
@@ -376,7 +376,7 @@ export const AddManualTransactionModal: React.FC<AddManualTransactionModalProps>
                   className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 rounded-xl font-bold text-amber-600"
                 >
                   <option value={5}>Tanggal 5</option>
-                  <option value={10}>Tanggal 10 (Case 4: 10 Okt)</option>
+                  <option value={10}>Tanggal 10</option>
                   <option value={15}>Tanggal 15</option>
                   <option value={20}>Tanggal 20</option>
                   <option value={25}>Tanggal 25</option>
@@ -462,7 +462,7 @@ export const AddManualTransactionModal: React.FC<AddManualTransactionModalProps>
             <div className="text-xs">
               <span className="font-bold text-emerald-900 dark:text-emerald-200 flex items-center gap-1.5">
                 <Send className="w-3.5 h-3.5 text-emerald-600" />
-                Case 3: Kirim Notifikasi Transaksi WhatsApp Otomatis Sehabis Akad
+                Kirim Notifikasi Rincian Akad ke WhatsApp Nasabah
               </span>
               <p className="text-[11px] text-emerald-700 dark:text-emerald-300">
                 Mengirim detail akad langsung ke WhatsApp nasabah & admin via Fonnte Gateway.
@@ -484,7 +484,7 @@ export const AddManualTransactionModal: React.FC<AddManualTransactionModalProps>
             onClick={handleSaveTransaction}
             className="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-full text-xs font-bold shadow-md shadow-indigo-500/25 flex items-center gap-1.5 transition-all active:scale-95"
           >
-            <Sparkles className="w-4 h-4" />
+            <CheckCircle2 className="w-4 h-4" />
             <span>Simpan Akad Pembiayaan</span>
           </button>
         </div>

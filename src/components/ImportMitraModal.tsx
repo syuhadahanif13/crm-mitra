@@ -7,7 +7,6 @@ import {
   Coins,
   Building2,
   Calendar,
-  Sparkles,
   ArrowRight,
   RefreshCw,
   UploadCloud
@@ -244,8 +243,8 @@ export const ImportMitraModal: React.FC<ImportMitraModalProps> = ({
                 : 'border-transparent text-slate-500 hover:text-slate-800'
             }`}
           >
-            <Sparkles className="w-4 h-4" />
-            <span>Preset Transaksi Mitra ({INITIAL_MITRA_TRANSACTIONS.length})</span>
+            <Building2 className="w-4 h-4" />
+            <span>Daftar Pesanan Mitra ({INITIAL_MITRA_TRANSACTIONS.length})</span>
           </button>
 
           <button

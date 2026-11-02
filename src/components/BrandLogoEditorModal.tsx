@@ -3,7 +3,6 @@ import {
   X,
   Palette,
   Upload,
-  Sparkles,
   Check,
   RotateCcw,
   Crown,

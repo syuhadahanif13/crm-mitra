@@ -350,7 +350,7 @@ export const sendAkadWhatsAppNotification = async (
 ): Promise<{ success: boolean; message: string }> => {
   const targetPhone = formatPhoneTo62(contract.customerPhone);
   const lines = [
-    '✨ *AKAD PEMBIAYAAN CICILAN EMAS RESMI*',
+    '*PEMBERITAHUAN AKAD PEMBIAYAAN EMAS*',
     'PT EMAS MURNI ASLI x RAJA EMAS INDONESIA',
     '------------------------------------------------',
     `*Nomor Akad:* ${contract.contractNumber}`,
@@ -358,15 +358,15 @@ export const sendAkadWhatsAppNotification = async (
     `*Mitra:* ${contract.partnerName} (${contract.partnerCategory})`,
     '',
     `*Spesifikasi Emas:* ${contract.goldWeightGrams} Gram Logam Mulia SNI 999.9`,
-    `*Tenor Pembiayaan:* ${contract.tenorMonths} Bulan (1 Tahun)`,
+    `*Tenor Pembiayaan:* ${contract.tenorMonths} Bulan`,
     `*Uang Muka (DP):* Rp ${contract.downPayment.toLocaleString('id-ID')}`,
     `*Margin Syariah:* Rp ${contract.totalMarginAmount.toLocaleString('id-ID')} (${contract.marginRateAnnualPercent}% p.a)`,
     `*Angsuran per Bulan:* Rp ${contract.monthlyInstallment.toLocaleString('id-ID')}`,
     `*Tanggal Jatuh Tempo:* Setiap Tanggal ${contract.dueDateDay} per bulan`,
     '',
-    `*Jaminan Brankas:* Emas fisik ${contract.goldWeightGrams}g diamankan di Khazanah Brankas Konsorsium & diserahkan saat pelunasan.`,
+    `*Jaminan Brankas:* Emas fisik ${contract.goldWeightGrams}g disimpan di Khazanah Brankas Konsorsium & diserahkan saat pelunasan.`,
     '------------------------------------------------',
-    'Selamat, transaksi akad cicilan emas Anda telah aktif dan tercatat resmi di sistem konsorsium mitra!',
+    'Transaksi akad pembiayaan emas Anda telah disetujui dan tercatat pada sistem konsorsium mitra.',
     '',
     'Layanan Nasabah & Konfirmasi: (021) 5299-8800',
   ].join('\n');
@@ -384,8 +384,8 @@ export const sendAkadWhatsAppNotification = async (
     return {
       success: true,
       message: sentToCustomer
-        ? `Notifikasi akad berhasil dikirim ke WhatsApp nasabah (${targetPhone}) & Admin!`
-        : `Pesan akad disiapkan (Simulasi/Fonnte response tercatat).`,
+        ? `Notifikasi akad berhasil dikirim ke WhatsApp nasabah (${targetPhone}) dan Admin.`
+        : `Pesan akad berhasil disiapkan.`,
     };
   } catch (err: any) {
     console.error('sendAkadWhatsAppNotification error:', err);
@@ -406,27 +406,27 @@ export const sendDueDateReminderWhatsApp = async (params: {
 }): Promise<{ success: boolean; message: string }> => {
   const targetPhone = formatPhoneTo62(params.customerPhone);
   const lines = [
-    '🔔 *PENGINGAT JATUH TEMPO ANGSURAN EMAS*',
+    '*PENGINGAT JATUH TEMPO ANGSURAN EMAS*',
     'PT EMAS MURNI ASLI x RAJA EMAS INDONESIA',
     '------------------------------------------------',
     `Yth. *${params.customerName}*,`,
     '',
-    `Kami menginformasikan bahwa tagihan angsuran cicilan emas *${params.goldGrams} Gram* Anda telah mendekati / bertepatan dengan tanggal jatuh tempo:`,
+    `Kami menginformasikan bahwa jadwal angsuran pembiayaan emas *${params.goldGrams} Gram* Anda telah memasuki tanggal jatuh tempo:`,
     '',
     `*No. Akad:* ${params.contractNumber}`,
-    `*Angsuran ke:* ${params.installmentNumber} dari ${params.totalInstallments} Bulan`,
-    `*Jatuh Tempo:* ${params.dueDate}`,
+    `*Angsuran:* Bulan ke-${params.installmentNumber} dari ${params.totalInstallments} Bulan`,
+    `*Tanggal Jatuh Tempo:* ${params.dueDate}`,
     `*Nominal Tagihan:* *Rp ${params.amount.toLocaleString('id-ID')}*`,
     `*Mitra Pembiayaan:* ${params.partnerName}`,
     '',
-    '*Rekening Resmi Pembayaran:*',
+    '*Rekening Pembayaran:*',
     'Bank BCA: *8694991111*',
     'A.N: *PT EMAS MURNI ASLI*',
     '',
-    'Mohon melakukan pembayaran sebelum tanggal jatuh tempo agar status pembiayaan emas Anda tetap lancar.',
-    'Abaikan pesan ini apabila Anda telah melakukan pembayaran.',
+    'Mohon melakukan pembayaran sebelum tanggal jatuh tempo agar status pembiayaan tetap lancar.',
+    'Abaikan pesan ini apabila Anda telah menyelesaikan pembayaran.',
     '------------------------------------------------',
-    'Konfirmasi bukti transfer ke WhatsApp Layanan: +62 812-1212-9533',
+    'Konfirmasi pembayaran ke WhatsApp Layanan: +62 812-1212-9533',
   ].join('\n');
 
   try {

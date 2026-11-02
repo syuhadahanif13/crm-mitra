@@ -3,7 +3,6 @@ import {
   Clock,
   Calendar,
   Send,
-  Sparkles,
   ChevronLeft,
   ChevronRight,
   RotateCcw,
@@ -13,7 +12,8 @@ import {
   AlertTriangle,
   Building2,
   ExternalLink,
-  ChevronRight as ChevronRightIcon
+  ChevronRight as ChevronRightIcon,
+  Bell
 } from 'lucide-react';
 import { CustomerProfile, GoldInstallmentContract, UserSession } from '../types';
 import { formatRupiah, formatGrams } from '../utils/formatters';
@@ -651,14 +651,14 @@ export const AudimeDashboardView: React.FC<AudimeDashboardViewProps> = ({
             </div>
           </div>
 
-          {/* Quick Case 4 CTA */}
+          {/* Manage All Due Dates CTA */}
           <div className="mt-4 pt-4 border-t border-slate-100 dark:border-gray-800">
             <button
               onClick={() => onNavigateTab('due')}
               className="w-full py-2.5 px-4 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 rounded-2xl text-xs font-bold flex items-center justify-center gap-1.5 transition-colors"
             >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Otomasi Notifikasi Lengkap (Case 4)</span>
+              <Bell className="w-3.5 h-3.5" />
+              <span>Buka Seluruh Jadwal Jatuh Tempo</span>
             </button>
           </div>
         </div>

@@ -5,7 +5,8 @@ import {
   Coins, 
   Search, 
   Eye, 
-  BellRing
+  BellRing,
+  X
 } from 'lucide-react';
 import { GoldInstallmentContract, CustomerProfile } from '../types';
 import { formatRupiah, formatGrams } from '../utils/formatters';
@@ -128,10 +129,10 @@ export const InstallmentContractView: React.FC<InstallmentContractViewProps> = (
     try {
       await sendAkadWhatsAppNotification(newContract);
       setActionSuccessNotice(
-        `✅ Akad ${contractNum} berhasil diterbitkan! Notifikasi WhatsApp dikirim ke ${selectedCust.name} (${selectedCust.phone}).`
+        `Akad ${contractNum} berhasil diterbitkan. Notifikasi WhatsApp dikirim ke ${selectedCust.name} (${selectedCust.phone}).`
       );
     } catch (err) {
-      setActionSuccessNotice(`✅ Akad ${contractNum} berhasil diterbitkan.`);
+      setActionSuccessNotice(`Akad ${contractNum} berhasil diterbitkan.`);
     }
 
     setIsSubmitting(false);
@@ -164,7 +165,7 @@ export const InstallmentContractView: React.FC<InstallmentContractViewProps> = (
             onClick={() => setActionSuccessNotice(null)}
             className="p-1 rounded text-emerald-700 hover:text-emerald-950 font-bold cursor-pointer"
           >
-            ✕
+            <X className="w-4 h-4" />
           </button>
         </div>
       )}
@@ -194,15 +195,15 @@ export const InstallmentContractView: React.FC<InstallmentContractViewProps> = (
         </button>
       </div>
 
-      {/* Highlight Box Case 2: Cicilan 1 Tahun 10 Gram */}
+      {/* Highlight Box: Cicilan 1 Tahun 10 Gram */}
       <div className="p-4 rounded-2xl bg-gradient-to-r from-purple-900 via-indigo-900 to-purple-950 text-white border border-purple-700/50 shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="p-2.5 rounded-xl bg-amber-400 text-slate-950 font-black text-xs shrink-0">
-            CASE FITUR
+            AKAD RESMI
           </div>
           <div className="text-xs">
-            <span className="font-bold text-amber-300">Contoh Kasus Aktif: </span>
-            <span>Ibu Aini (42 th) — Cicilan 1 Tahun 10 Gram Logam Mulia SNI. Terlihat catatan DP Rp 5.000.000, margin 6%, angsuran Rp 1.859.375/bln, dan jatuh tempo tgl 10.</span>
+            <span className="font-bold text-amber-300">Akad Murabahah 10 Gram: </span>
+            <span>Ibu Aini (42 th) — Pembiayaan 1 Tahun Logam Mulia SNI 999.9. Terverifikasi DP Rp 5.000.000, margin syariah 6%, angsuran Rp 1.859.375/bln, jatuh tempo tgl 10.</span>
           </div>
         </div>
 
@@ -360,7 +361,7 @@ export const InstallmentContractView: React.FC<InstallmentContractViewProps> = (
                 onClick={() => setShowSimulateModal(false)}
                 className="p-1.5 rounded-xl text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer"
               >
-                ✕
+                <X className="w-5 h-5" />
               </button>
             </div>
 

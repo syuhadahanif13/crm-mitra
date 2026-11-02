@@ -8,7 +8,6 @@ import {
   Building,
   UserCheck,
   Printer,
-  Sparkles,
   Lock,
   Plus,
   RefreshCw,
@@ -149,13 +148,13 @@ export const StockOpnameView: React.FC<StockOpnameViewProps> = ({
       <div className="bg-gradient-to-r from-amber-700 via-amber-800 to-amber-950 rounded-2xl p-6 text-white shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/30 text-amber-200 text-xs font-semibold mb-2">
-            <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-            CASE 5: AUDIT STOCK OPNAME BRANKAS
+            <ShieldCheck className="w-3.5 h-3.5 text-amber-300" />
+            REKONSILIASI STOK KHUDUST BRANKAS
           </div>
           <h2 className="text-2xl font-bold">Stock Opname & Rekonsiliasi Emas Brankas</h2>
           <p className="text-amber-100 text-sm mt-1 max-w-2xl">
             Pencocokan fisik emas batangan SNI 999.9 di khazanah brankas konsorsium dengan saldo buku sistem,
-            termasuk alokasi jaminan fidusia akad cicilan aktif (misal 10g Ibu Aini).
+            termasuk alokasi jaminan fidusia akad cicilan aktif.
           </p>
         </div>
 
@@ -398,7 +397,7 @@ export const StockOpnameView: React.FC<StockOpnameViewProps> = ({
                         </span>
                         {isTenGramCase && (
                           <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-500 text-white">
-                            Case 2 & 5 (Aini)
+                            Jaminan Fidusia
                           </span>
                         )}
                       </div>

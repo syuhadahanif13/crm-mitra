@@ -11,7 +11,8 @@ import {
   Coins, 
   FileText, 
   MessageCircle,
-  ChevronRight
+  ChevronRight,
+  X
 } from 'lucide-react';
 import { CustomerProfile, GoldInstallmentContract } from '../types';
 import { formatRupiah } from '../utils/formatters';
@@ -385,7 +386,7 @@ export const CustomerProfileView: React.FC<CustomerProfileViewProps> = ({
                 onClick={() => setShowAddModal(false)}
                 className="p-1.5 rounded-xl text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 cursor-pointer"
               >
-                ✕
+                <X className="w-5 h-5" />
               </button>
             </div>
 

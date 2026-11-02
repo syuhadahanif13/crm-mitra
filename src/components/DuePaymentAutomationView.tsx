@@ -9,7 +9,6 @@ import {
   ExternalLink,
   Search,
   MessageSquare,
-  Sparkles,
   Phone,
   CreditCard,
   Building2,
@@ -178,25 +177,24 @@ export const DuePaymentAutomationView: React.FC<DuePaymentAutomationViewProps> =
       <div className="bg-gradient-to-r from-amber-600 via-amber-700 to-amber-900 rounded-2xl p-6 text-white shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/30 text-amber-200 text-xs font-semibold mb-2">
-            <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-            CASE 4: OTOMASI WHATSAPP JATUH TEMPO
+            <Bell className="w-3.5 h-3.5 text-amber-300" />
+            PENGINGAT JATUH TEMPO ANGSURAN
           </div>
-          <h2 className="text-2xl font-bold">Pengingat Otomatis Tagihan & Jatuh Tempo</h2>
+          <h2 className="text-2xl font-bold">Jadwal Penagihan & Pengingat WhatsApp</h2>
           <p className="text-amber-100 text-sm mt-1 max-w-2xl">
-            Sistem pengingat jatuh tempo otomatis via Fonnte WhatsApp API resmi PT Emas Murni Asli x Mitra.
-            Dilengkapi simulasi jatuh tempo <span className="font-semibold text-white underline">10 Oktober 2026 (Ibu Aini 42 th)</span>.
+            Sistem pengiriman pengingat tagihan resmi konsorsium mitra pembiayaan emas langsung ke WhatsApp nasabah.
           </p>
         </div>
         <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-3 rounded-xl border border-white/20">
-          <Bell className="w-6 h-6 text-amber-300 animate-pulse" />
+          <Bell className="w-6 h-6 text-amber-300" />
           <div>
-            <div className="text-xs text-amber-200">Total Jatuh Tempo Aktif</div>
+            <div className="text-xs text-amber-200">Total Tagihan Aktif</div>
             <div className="text-lg font-bold">{totalDueCount} Nasabah</div>
           </div>
         </div>
       </div>
 
-      {/* Case 4 Highlight Card: Ibu Aini 10 Oktober */}
+      {/* Due Highlight Card: Ibu Aini 10 Oktober */}
       <div className="bg-amber-50 dark:bg-amber-950/40 border-2 border-amber-400/60 rounded-2xl p-5 shadow-sm">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="flex items-start gap-3">
@@ -206,9 +204,9 @@ export const DuePaymentAutomationView: React.FC<DuePaymentAutomationViewProps> =
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-bold text-gray-900 dark:text-white text-base">
-                  Case 4: Ibu Aini (42 Tahun) - Jatuh Tempo 10 Oktober 2026
+                  Tagihan Jatuh Tempo: Ibu Aini (42 Tahun) - 10 Oktober 2026
                 </span>
-                <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-amber-500 text-white animate-bounce">
+                <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-amber-500 text-white">
                   Jatuh Tempo Hari Ini
                 </span>
               </div>
