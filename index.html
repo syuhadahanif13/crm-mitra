@@ -7,6 +7,18 @@
     <title>CRM & Pembiayaan Emas - Raja Emas Indonesia</title>
     <meta name="description" content="Sistem CRM Nasabah, Akad Cicilan Emas, WhatsApp Automation Jatuh Tempo, dan Stock Opname Brankas" />
     <link rel="icon" type="image/png" href="https://images.glints.com/unsafe/glints-dashboard.oss-ap-southeast-1.aliyuncs.com/company-logo/1871f1632174b485181d942f9d5e61b6.png" />
+    <script>
+      (function() {
+        try {
+          var theme = localStorage.getItem('crm_theme');
+          if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body class="bg-slate-100 text-slate-800 antialiased select-none dark:bg-slate-950 dark:text-slate-100">
     <div id="root"></div>

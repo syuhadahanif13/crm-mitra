@@ -94,8 +94,9 @@ const PARTNER_OPTIONS: UserSession[] = [
 ];
 
 export const CrmApp: React.FC = () => {
+  // Default to Light Mode
   const [darkMode, setDarkMode] = useState<boolean>(() => {
-    return localStorage.getItem('crm_dark_mode') === 'true';
+    return localStorage.getItem('crm_theme') === 'dark';
   });
 
   const [activeTab, setActiveTab] = useState<
@@ -121,13 +122,15 @@ export const CrmApp: React.FC = () => {
   const [isAddTransactionModalOpen, setIsAddTransactionModalOpen] = useState(false);
   const [isBrandLogoModalOpen, setIsBrandLogoModalOpen] = useState(false);
 
-  // Sync dark mode
+  // Sync dark mode class
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add('dark');
+      localStorage.setItem('crm_theme', 'dark');
       localStorage.setItem('crm_dark_mode', 'true');
     } else {
       document.documentElement.classList.remove('dark');
+      localStorage.setItem('crm_theme', 'light');
       localStorage.setItem('crm_dark_mode', 'false');
     }
   }, [darkMode]);
@@ -415,13 +418,23 @@ export const CrmApp: React.FC = () => {
                   <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-indigo-500 rounded-full" />
                 </button>
 
-                {/* Dark mode toggle */}
+                {/* Theme mode toggle pill */}
                 <button
                   onClick={() => setDarkMode(!darkMode)}
-                  className="p-2 rounded-2xl text-slate-600 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-800 transition-colors"
-                  title={darkMode ? 'Ganti ke Mode Terang (Default)' : 'Ganti ke Mode Gelap'}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border transition-all cursor-pointer bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200"
+                  title={darkMode ? 'Beralih ke Mode Terang (Default)' : 'Beralih ke Mode Gelap'}
                 >
-                  {darkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-600" />}
+                  {darkMode ? (
+                    <>
+                      <Moon className="w-3.5 h-3.5 text-indigo-400" />
+                      <span>Mode Gelap</span>
+                    </>
+                  ) : (
+                    <>
+                      <Sun className="w-3.5 h-3.5 text-amber-500" />
+                      <span>Mode Terang</span>
+                    </>
+                  )}
                 </button>
 
                 {/* User Avatar */}
