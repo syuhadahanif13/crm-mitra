@@ -178,11 +178,11 @@ export const DuePaymentAutomationView: React.FC<DuePaymentAutomationViewProps> =
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/30 text-amber-200 text-xs font-semibold mb-2">
             <Bell className="w-3.5 h-3.5 text-amber-300" />
-            PENGINGAT JATUH TEMPO ANGSURAN
+            Jadwal Jatuh Tempo
           </div>
-          <h2 className="text-2xl font-bold">Jadwal Penagihan & Pengingat WhatsApp</h2>
+          <h2 className="text-2xl font-bold">Pengingat Tagihan & WhatsApp</h2>
           <p className="text-amber-100 text-sm mt-1 max-w-2xl">
-            Sistem pengiriman pengingat tagihan resmi konsorsium mitra pembiayaan emas langsung ke WhatsApp nasabah.
+            Kirim pengingat tagihan angsuran pembiayaan emas langsung ke WhatsApp nasabah.
           </p>
         </div>
         <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-3 rounded-xl border border-white/20">

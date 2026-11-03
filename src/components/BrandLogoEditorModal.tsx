@@ -52,7 +52,7 @@ export const BrandLogoEditorModal: React.FC<BrandLogoEditorModalProps> = ({
   const handleSave = () => {
     onSaveBrandConfig({
       brandName: brandName.trim() || 'Raja Emas CRM',
-      tagline: tagline.trim() || 'Sistem Pembiayaan & Cicilan Emas',
+      tagline: tagline.trim() || 'Manajemen Pembiayaan Emas',
       logoType,
       logoUrl: logoType === 'image' ? logoUrl : undefined,
       presetIcon,
@@ -65,7 +65,7 @@ export const BrandLogoEditorModal: React.FC<BrandLogoEditorModalProps> = ({
     setBrandName(DEFAULT_BRAND_CONFIG.brandName);
     setTagline(DEFAULT_BRAND_CONFIG.tagline);
     setLogoType(DEFAULT_BRAND_CONFIG.logoType);
-    setLogoUrl('');
+    setLogoUrl(DEFAULT_BRAND_CONFIG.logoUrl || '');
     setPresetIcon(DEFAULT_BRAND_CONFIG.presetIcon);
     setAccentTheme(DEFAULT_BRAND_CONFIG.accentTheme);
   };
@@ -119,7 +119,7 @@ export const BrandLogoEditorModal: React.FC<BrandLogoEditorModalProps> = ({
                 {brandName || 'Raja Emas CRM'}
               </div>
               <div className="text-xs text-slate-500 dark:text-gray-400">
-                {tagline || 'Konsorsium Pembiayaan Emas'}
+                {tagline || 'Manajemen Pembiayaan Emas'}
               </div>
             </div>
           </div>
@@ -147,7 +147,7 @@ export const BrandLogoEditorModal: React.FC<BrandLogoEditorModalProps> = ({
                 type="text"
                 value={tagline}
                 onChange={(e) => setTagline(e.target.value)}
-                placeholder="Sistem Pembiayaan & Cicilan Emas"
+                placeholder="Manajemen Pembiayaan Emas"
                 className="w-full px-3 py-2 bg-slate-50 dark:bg-gray-800 border border-slate-300 dark:border-gray-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500"
               />
             </div>

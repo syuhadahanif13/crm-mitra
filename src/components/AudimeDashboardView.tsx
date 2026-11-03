@@ -135,7 +135,7 @@ export const AudimeDashboardView: React.FC<AudimeDashboardViewProps> = ({
         {/* Left: Breadcrumbs */}
         <div className="flex items-center gap-2">
           <span className="text-xs sm:text-sm font-medium text-slate-400 dark:text-gray-500">
-            Konsorsium CRM
+            Dasbor Pembiayaan
           </span>
           <span className="text-slate-300 dark:text-gray-700">/</span>
           <span className="text-xs sm:text-sm font-bold text-slate-800 dark:text-white flex items-center gap-1.5">
@@ -221,7 +221,7 @@ export const AudimeDashboardView: React.FC<AudimeDashboardViewProps> = ({
                 Ringkasan Pembiayaan Emas
               </h3>
               <p className="text-xs text-slate-400 dark:text-gray-500 mt-0.5">
-                Total portofolio emas SNI 999.9 aktif
+                Portofolio pembiayaan emas aktif
               </p>
             </div>
             <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300">
@@ -511,7 +511,7 @@ export const AudimeDashboardView: React.FC<AudimeDashboardViewProps> = ({
                     <span
                       className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                         isAiniCase
-                          ? 'bg-amber-500 text-white animate-pulse'
+                          ? 'bg-amber-500 text-white'
                           : cust.status === 'Aktif'
                           ? 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300'
                           : 'bg-slate-100 text-slate-700 dark:bg-gray-800 dark:text-gray-300'

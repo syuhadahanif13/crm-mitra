@@ -168,7 +168,7 @@ export const ImportMitraModal: React.FC<ImportMitraModalProps> = ({
       goldVaultStatus: 'Tersimpan di Brankas (Jaminan Fidusia)',
       schedule: schedule,
       akadNotes: `Hasil import otomatis dari transaksi mitra No: ${trx.invoiceNumber}`,
-      verifiedBy: 'Tim Verifikasi Konsorsium REI',
+      verifiedBy: 'Tim Verifikasi Mitra',
     };
 
     onImportCustomer(newCustomer);
@@ -219,9 +219,9 @@ export const ImportMitraModal: React.FC<ImportMitraModalProps> = ({
               <Download className="w-5 h-5 text-indigo-300" />
             </div>
             <div>
-              <h3 className="font-bold text-lg">Import Transaksi dari Dasbor Mitra</h3>
+              <h3 className="font-bold text-lg">Import Transaksi Mitra</h3>
               <p className="text-xs text-indigo-200">
-                Tarik data pesanan mitra dan ubah langsung menjadi Akad Cicilan Emas atau Profil Nasabah CRM
+                Tarik data transaksi dari Dasbor Mitra ke dalam sistem CRM
               </p>
             </div>
           </div>

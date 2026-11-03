@@ -101,7 +101,7 @@ export const INITIAL_CONTRACTS: GoldInstallmentContract[] = [
     remainingFinancedAmount: 22312500 - (1859375 * 2),
     nextDueDate: '2026-10-10', // KASUS JATUH TEMPO 10 OKTOBER 2026
     goldVaultStatus: 'Tersimpan di Brankas (Jaminan Fidusia)',
-    akadNotes: 'Akad Pembiayaan Murabahah Emas Batangan 10 Gram SNI. Emas fisik diamankan di Brankas Konsorsium BPRS x PT Emas Murni Asli hingga pelunasan angsuran ke-12.',
+    akadNotes: 'Akad Pembiayaan Murabahah Emas Batangan 10 Gram SNI. Emas fisik disimpan aman di brankas hingga pelunasan angsuran ke-12.',
     verifiedBy: 'Ustadz Zulkifli (Dewan Pengawas Syariah)',
     schedule: [
       {

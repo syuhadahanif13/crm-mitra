@@ -121,7 +121,7 @@ export const InstallmentContractView: React.FC<InstallmentContractViewProps> = (
       goldVaultStatus: 'Tersimpan di Brankas (Jaminan Fidusia)',
       schedule,
       akadNotes: `Akad Murabahah Emas ${goldWeightGrams} Gram SNI tenor ${tenorMonths} bulan. DP ${formatRupiah(simulation.downPayment)} telah diterima di awal.`,
-      verifiedBy: 'Dewan Pengawas Syariah & Khazanah Konsorsium',
+      verifiedBy: 'Tim Verifikasi Mitra',
     };
 
     onAddContract(newContract);

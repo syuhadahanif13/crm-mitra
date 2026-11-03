@@ -92,7 +92,7 @@ export const StockOpnameView: React.FC<StockOpnameViewProps> = ({
       verifiedAt: new Date().toISOString(),
       summaryNote: hasDifference
         ? `Audit selesai dengan selisih ${totalDifferenceGrams > 0 ? '+' : ''}${totalDifferenceGrams.toFixed(2)} gram. Memerlukan investigasi fisik.`
-        : 'Seluruh fisik emas batangan SNI di brankas khazanah 100% cocok dengan saldo pembukuan sistem.',
+        : 'Seluruh fisik emas batangan di brankas cocok dengan saldo pembukuan sistem.',
     };
 
     onUpdateRecord(updatedRecord);
@@ -112,9 +112,9 @@ export const StockOpnameView: React.FC<StockOpnameViewProps> = ({
       id: newId,
       opnameNumber: `SO-REI/${today.replace(/-/g, '/')}/00${records.length + 1}`,
       date: today,
-      vaultLocation: 'Khazanah Brankas Sentral Konsorsium PT Emas Murni Asli - Jakarta',
-      auditorName: 'Tim Audit Internal & Petugas Khazanah Brankas',
-      auditorRole: 'Kepala Operasional Khazanah & Dewan Syariah',
+      vaultLocation: 'Brankas Sentral PT Emas Murni Asli - Jakarta',
+      auditorName: 'Tim Audit Internal & Petugas Brankas',
+      auditorRole: 'Operasional Brankas',
       status: 'Menunggu Verifikasi',
       items: initialItems,
       totalSystemGrams: activeRecord?.totalSystemGrams || 0,
@@ -149,12 +149,11 @@ export const StockOpnameView: React.FC<StockOpnameViewProps> = ({
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/30 text-amber-200 text-xs font-semibold mb-2">
             <ShieldCheck className="w-3.5 h-3.5 text-amber-300" />
-            REKONSILIASI STOK KHUDUST BRANKAS
+            Stock Opname Brankas
           </div>
-          <h2 className="text-2xl font-bold">Stock Opname & Rekonsiliasi Emas Brankas</h2>
+          <h2 className="text-2xl font-bold">Stock Opname & Rekonsiliasi Emas</h2>
           <p className="text-amber-100 text-sm mt-1 max-w-2xl">
-            Pencocokan fisik emas batangan SNI 999.9 di khazanah brankas konsorsium dengan saldo buku sistem,
-            termasuk alokasi jaminan fidusia akad cicilan aktif.
+            Pencocokan fisik emas batangan di brankas dengan saldo sistem, termasuk alokasi untuk akad cicilan berjalan.
           </p>
         </div>
 

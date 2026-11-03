@@ -83,7 +83,7 @@ export const CustomerProfileView: React.FC<CustomerProfileViewProps> = ({
       totalGramsFinanced: 0,
       activeContractsCount: 0,
       completedContractsCount: 0,
-      notes: 'Nasabah baru terdaftar via CRM Konsorsium Raja Emas.',
+      notes: 'Nasabah baru terdaftar via CRM Raja Emas.',
     };
 
     onAddCustomer(newCust);

@@ -121,7 +121,7 @@ export const AddManualTransactionModal: React.FC<AddManualTransactionModalProps>
         totalGramsFinanced: goldWeight,
         activeContractsCount: 1,
         completedContractsCount: 0,
-        notes: 'Didaftarkan melalui Transaksi Mandiri CRM Konsorsium.',
+        notes: 'Didaftarkan melalui input transaksi mandiri CRM.',
       };
       onAddCustomer(newCust);
     }
@@ -202,9 +202,9 @@ export const AddManualTransactionModal: React.FC<AddManualTransactionModalProps>
               <Plus className="w-5 h-5 text-indigo-300" />
             </div>
             <div>
-              <h3 className="font-bold text-lg">Tambah Transaksi Mandiri di CRM</h3>
+              <h3 className="font-bold text-lg">Tambah Transaksi Mandiri</h3>
               <p className="text-xs text-indigo-200">
-                Pencatatan langsung akad pembiayaan emas batangan SNI tanpa bergantung dasbor mitra
+                Pencatatan akad pembiayaan emas baru secara langsung ke dalam CRM
               </p>
             </div>
           </div>
@@ -237,7 +237,7 @@ export const AddManualTransactionModal: React.FC<AddManualTransactionModalProps>
               }`}
             >
               <Coins className="w-4 h-4" />
-              <span>Akad Cicilan Emas (10g 1 Tahun, d.l.l)</span>
+              <span>Akad Cicilan Emas</span>
             </button>
             <button
               onClick={() => setTransactionType('tunai')}

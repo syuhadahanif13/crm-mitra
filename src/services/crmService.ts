@@ -221,8 +221,9 @@ export const authenticateCrmUser = async (
 
 export const DEFAULT_BRAND_CONFIG: CrmBrandConfig = {
   brandName: 'Raja Emas CRM',
-  tagline: 'Sistem Pembiayaan & Cicilan Emas',
-  logoType: 'preset',
+  tagline: 'Manajemen Pembiayaan Emas',
+  logoType: 'image',
+  logoUrl: 'https://rajaemasindonesia.co.id/wp-content/uploads/2025/01/2-Photoroom.png',
   presetIcon: 'gold-ring',
   accentTheme: 'purple-indigo',
 };
@@ -298,7 +299,14 @@ export const loadCrmBrandConfig = (): CrmBrandConfig => {
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.BRAND_CONFIG);
     if (!raw) return DEFAULT_BRAND_CONFIG;
-    return { ...DEFAULT_BRAND_CONFIG, ...JSON.parse(raw) };
+    const parsed = JSON.parse(raw);
+    return {
+      ...DEFAULT_BRAND_CONFIG,
+      ...parsed,
+      logoType: parsed.logoUrl ? parsed.logoType : 'image',
+      logoUrl: parsed.logoUrl || DEFAULT_BRAND_CONFIG.logoUrl,
+      tagline: parsed.tagline === 'Sistem Pembiayaan & Cicilan Emas' ? 'Manajemen Pembiayaan Emas' : (parsed.tagline || 'Manajemen Pembiayaan Emas'),
+    };
   } catch (e) {
     return DEFAULT_BRAND_CONFIG;
   }
@@ -564,9 +572,9 @@ export const sendAkadWhatsAppNotification = async (
     `*Angsuran per Bulan:* Rp ${contract.monthlyInstallment.toLocaleString('id-ID')}`,
     `*Tanggal Jatuh Tempo:* Setiap Tanggal ${contract.dueDateDay} per bulan`,
     '',
-    `*Jaminan Brankas:* Emas fisik ${contract.goldWeightGrams}g disimpan di Khazanah Brankas Konsorsium & diserahkan saat pelunasan.`,
+    `*Jaminan:* Emas fisik ${contract.goldWeightGrams}g disimpan di brankas & diserahkan saat pelunasan.`,
     '------------------------------------------------',
-    'Transaksi akad pembiayaan emas Anda telah disetujui dan tercatat pada sistem konsorsium mitra.',
+    'Transaksi akad pembiayaan emas Anda telah disetujui dan tercatat pada sistem.',
     '',
     'Layanan Nasabah & Konfirmasi: (021) 5299-8800',
   ].join('\n');

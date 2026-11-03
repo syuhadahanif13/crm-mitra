@@ -97,16 +97,16 @@ export const AkadContractModal: React.FC<AkadContractModalProps> = ({
           <div className="flex flex-col sm:flex-row justify-between items-start pb-6 border-b-2 border-purple-900 gap-4">
             <div className="flex items-center gap-3">
               <img
-                src="https://down-id.img.susercontent.com/file/id-11134233-8224r-mgbnv1ee3e2zea"
-                alt="PT Emas Murni Asli"
-                className="w-14 h-14 rounded-2xl object-cover shadow border border-gray-200"
+                src="https://rajaemasindonesia.co.id/wp-content/uploads/2025/01/2-Photoroom.png"
+                alt="Raja Emas Indonesia"
+                className="h-12 w-auto object-contain"
               />
               <div>
                 <h1 className="text-xl font-black text-purple-950 tracking-tight">
                   PT EMAS MURNI ASLI
                 </h1>
                 <div className="text-xs font-semibold text-amber-600">
-                  Konsorsium Pembiayaan Logam Mulia Syariah BPRS x Raja Emas Indonesia
+                  Pembiayaan Logam Mulia Syariah • Raja Emas Indonesia
                 </div>
                 <div className="text-[11px] text-gray-500 mt-1">
                   Ruko Sedayu Square Blok H-08, Jl. Kamal Raya, Jakarta Barat · Izin Dagang: 912030991823
