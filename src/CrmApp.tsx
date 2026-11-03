@@ -20,7 +20,8 @@ import {
   Crown,
   Gem,
   CircleDot,
-  Shield
+  Shield,
+  LogOut
 } from 'lucide-react';
 import {
   CustomerProfile,
@@ -39,7 +40,11 @@ import {
   loadCrmNotifications,
   loadCrmBrandConfig,
   saveCrmBrandConfig,
+  loadCrmSession,
+  saveCrmSession,
+  clearCrmSession,
 } from './services/crmService';
+import { CrmLoginPage } from './components/CrmLoginPage';
 import { AudimeDashboardView } from './components/AudimeDashboardView';
 import { CustomerProfileView } from './components/CustomerProfileView';
 import { InstallmentContractView } from './components/InstallmentContractView';
@@ -103,7 +108,17 @@ export const CrmApp: React.FC = () => {
     'dashboard' | 'due' | 'customers' | 'contracts' | 'opname' | 'import' | 'settings'
   >('dashboard');
 
-  const [currentUser, setCurrentUser] = useState<UserSession>(PARTNER_OPTIONS[0]);
+  // User Authentication Session
+  const [userSession, setUserSession] = useState<UserSession | null>(() => loadCrmSession());
+
+  const [currentUser, setCurrentUser] = useState<UserSession>(() => {
+    return loadCrmSession() || PARTNER_OPTIONS[0];
+  });
+
+  const handleLogout = () => {
+    clearCrmSession();
+    setUserSession(null);
+  };
 
   // Brand config
   const [brandConfig, setBrandConfig] = useState<CrmBrandConfig>(() => loadCrmBrandConfig());
@@ -247,15 +262,27 @@ export const CrmApp: React.FC = () => {
       ? 'bg-gradient-to-r from-blue-600 to-cyan-500 shadow-blue-500/30'
       : 'bg-gradient-to-r from-indigo-600 to-purple-600 shadow-indigo-500/30';
 
+  // If user is not authenticated, render Login Page
+  if (!userSession) {
+    return (
+      <CrmLoginPage
+        brandConfig={brandConfig}
+        onLoginSuccess={(session) => {
+          setUserSession(session);
+          setCurrentUser(session);
+          saveCrmSession(session);
+        }}
+        darkMode={darkMode}
+      />
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-slate-100 dark:bg-slate-950 p-2 sm:p-5 flex items-center justify-center font-sans antialiased text-slate-800 dark:text-slate-100 selection:bg-indigo-500 selection:text-white">
-      {/* Main Container */}
-      <div className="w-full max-w-[1520px] bg-white dark:bg-gray-900 rounded-[28px] shadow-xl border border-slate-200/80 dark:border-gray-800 overflow-hidden flex flex-col min-h-[95vh]">
-        <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
-          {/* ───────────────────────────────────────────────────────────── */}
-          {/* LEFT SIDEBAR                                                   */}
-          {/* ───────────────────────────────────────────────────────────── */}
-          <aside className="w-full md:w-64 bg-slate-50/60 dark:bg-gray-900 border-r border-slate-200/80 dark:border-gray-800 p-5 flex flex-col justify-between shrink-0">
+    <div className="min-h-screen w-full bg-slate-50 dark:bg-gray-950 font-sans antialiased text-slate-800 dark:text-slate-100 flex flex-col md:flex-row selection:bg-indigo-500 selection:text-white">
+      {/* ───────────────────────────────────────────────────────────── */}
+      {/* LEFT SIDEBAR (Full Height Edge-to-Edge)                       */}
+      {/* ───────────────────────────────────────────────────────────── */}
+      <aside className="w-full md:w-64 bg-white dark:bg-gray-900 border-r border-slate-200/80 dark:border-gray-800 p-5 flex flex-col justify-between shrink-0 md:min-h-screen md:sticky md:top-0 md:h-screen overflow-y-auto">
             <div className="space-y-6">
               {/* Brand Logo & Name (With Live Edit Trigger) */}
               <div
@@ -437,8 +464,8 @@ export const CrmApp: React.FC = () => {
                   )}
                 </button>
 
-                {/* User Avatar */}
-                <div className="flex items-center gap-2.5 pl-2 border-l border-slate-200 dark:border-gray-800">
+                {/* User Avatar & Logout */}
+                <div className="flex items-center gap-2 pl-2 border-l border-slate-200 dark:border-gray-800">
                   <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 text-white font-bold flex items-center justify-center text-xs shadow-sm ring-2 ring-white dark:ring-gray-900">
                     {currentUser.name.substring(0, 2).toUpperCase()}
                   </div>
@@ -450,6 +477,13 @@ export const CrmApp: React.FC = () => {
                       {currentUser.partnerCategory}
                     </div>
                   </div>
+                  <button
+                    onClick={handleLogout}
+                    className="p-1.5 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors ml-1 cursor-pointer"
+                    title="Keluar / Logout Akun CRM"
+                  >
+                    <LogOut className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
             </header>
@@ -518,8 +552,6 @@ export const CrmApp: React.FC = () => {
               )}
             </main>
           </div>
-        </div>
-      </div>
 
       {/* ───────────────────────────────────────────────────────────── */}
       {/* MODALS & OVERLAYS                                             */}

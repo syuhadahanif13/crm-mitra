@@ -5,7 +5,8 @@ import {
   StockOpnameRecord, 
   CrmNotification,
   CrmBrandConfig,
-  MitraDashboardTransaction 
+  MitraDashboardTransaction,
+  UserSession
 } from '../types';
 import { INITIAL_CUSTOMERS, INITIAL_CONTRACTS, INITIAL_STOCK_OPNAME_RECORDS, INITIAL_CRM_NOTIFICATIONS } from '../data/mockCrmData';
 import { sendWhatsAppMessage, WHATSAPP_TARGETS } from './fonnteService';
@@ -17,7 +18,206 @@ const STORAGE_KEYS = {
   NOTIFICATIONS: 'crm_standalone_notifications_v1',
   BRAND_CONFIG: 'crm_custom_branding_v1',
   IMPORTED_TRANSACTIONS: 'crm_imported_mitra_transactions_v1',
+  USER_SESSION: 'crm_user_session',
+  MITRA_SESSION: 'rei_mitra_session',
 };
+
+export const PARTNER_CREDENTIALS: Array<{
+  email: string;
+  passwords: string[];
+  session: UserSession;
+}> = [
+  {
+    email: 'admin@bprs.local',
+    passwords: ['admin123', 'admin123', 'mitra123'],
+    session: {
+      role: 'admin',
+      partnerId: 'rei-hq-admin',
+      partnerName: 'PT Emas Murni Asli (HQ)',
+      partnerCategory: 'Bank',
+      name: 'Super Admin Raja Emas',
+      email: 'admin@bprs.local',
+      discountBalance: 50000000,
+      pointsBalance: 2500,
+    },
+  },
+  {
+    email: 'pembiayaan@bprshik.co.id',
+    passwords: ['mitra123', 'bprshik123', '123456'],
+    session: {
+      role: 'bprs',
+      partnerId: 'partner-bprs-himbarsi-01',
+      partnerName: 'BPRS Harta Insan Karimah',
+      partnerCategory: 'BPRS',
+      name: 'Ahmad Fauzi, S.E.',
+      email: 'pembiayaan@bprshik.co.id',
+      discountBalance: 12500000,
+      pointsBalance: 420,
+    },
+  },
+  {
+    email: 'gold.financing@bankdki.co.id',
+    passwords: ['mitra123', 'bankdki123', '123456'],
+    session: {
+      role: 'bank',
+      partnerId: 'partner-bank-dki-syariah',
+      partnerName: 'Bank DKI Syariah',
+      partnerCategory: 'Bank',
+      name: 'Irfan Hakim, M.M.',
+      email: 'gold.financing@bankdki.co.id',
+      discountBalance: 28000000,
+      pointsBalance: 980,
+    },
+  },
+  {
+    email: 'koperasi212@emas.co.id',
+    passwords: ['mitra123', 'koperasi123', '123456'],
+    session: {
+      role: 'koperasi',
+      partnerId: 'partner-kop-syariah-212',
+      partnerName: 'Koperasi Syariah 212',
+      partnerCategory: 'Koperasi Syariah',
+      name: 'Siti Aminah, S.Sy.',
+      email: 'koperasi212@emas.co.id',
+      discountBalance: 7500000,
+      pointsBalance: 310,
+    },
+  },
+  {
+    email: 'himbarsi@himbarsi.or.id',
+    passwords: ['mitra123', 'himbarsi123', '123456'],
+    session: {
+      role: 'bprs',
+      partnerId: 'partner-himbarsi-pusat',
+      partnerName: 'Himbarsi (Himpunan BPRS Indonesia)',
+      partnerCategory: 'BPRS',
+      name: 'Sekretariat Himbarsi',
+      email: 'himbarsi@himbarsi.or.id',
+      discountBalance: 15000000,
+      pointsBalance: 600,
+    },
+  },
+];
+
+export const loadCrmSession = (): UserSession | null => {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEYS.USER_SESSION);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed?.email && parsed?.role) return parsed;
+    }
+    // Also check if already logged in on Dasbor Mitra
+    const mitraRaw = localStorage.getItem(STORAGE_KEYS.MITRA_SESSION);
+    if (mitraRaw) {
+      const parsed = JSON.parse(mitraRaw);
+      if (parsed?.email) {
+        return {
+          role: parsed.role || 'bprs',
+          partnerId: parsed.partnerId || 'partner-bprs-himbarsi-01',
+          partnerName: parsed.partnerName || 'Mitra Raja Emas',
+          partnerCategory: parsed.partnerCategory || 'BPRS',
+          name: parsed.name || 'User Mitra',
+          email: parsed.email,
+          discountBalance: parsed.discountBalance || 0,
+          pointsBalance: parsed.pointsBalance || 0,
+        };
+      }
+    }
+    return null;
+  } catch (e) {
+    return null;
+  }
+};
+
+export const saveCrmSession = (session: UserSession): void => {
+  try {
+    localStorage.setItem(STORAGE_KEYS.USER_SESSION, JSON.stringify(session));
+  } catch (e) {
+    console.error('Failed to save CRM session:', e);
+  }
+};
+
+export const clearCrmSession = (): void => {
+  try {
+    localStorage.removeItem(STORAGE_KEYS.USER_SESSION);
+  } catch (e) {
+    console.error('Failed to clear CRM session:', e);
+  }
+};
+
+export const authenticateCrmUser = async (
+  email: string,
+  password: string
+): Promise<UserSession | null> => {
+  const cleanEmail = email.trim().toLowerCase();
+
+  // 1. Check known / Dasbor Mitra partner credentials
+  const match = PARTNER_CREDENTIALS.find((p) => p.email.toLowerCase() === cleanEmail);
+  if (match) {
+    if (match.passwords.includes(password) || password === 'mitra123' || password === '123456') {
+      return match.session;
+    }
+  }
+
+  // 2. Try Supabase remote authentication if configured and online
+  try {
+    const supabaseUrl = (import.meta as any).env?.VITE_SUPABASE_URL || 'https://rytaeenjobbutzodsido.supabase.co';
+    const supabaseKey = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY || 'sb_publishable_Iu_nl3uZM6Pud5rYYT5UNQ_DaZST_0-';
+
+    const res = await fetch(
+      `${supabaseUrl}/rest/v1/partners?email=eq.${encodeURIComponent(cleanEmail)}&is_active=eq.true&select=*`,
+      {
+        headers: {
+          apikey: supabaseKey,
+          Authorization: `Bearer ${supabaseKey}`,
+        },
+      }
+    );
+
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        const partner = data[0];
+        if (partner.password === password) {
+          const roleMap: Record<string, 'bprs' | 'bank' | 'koperasi'> = {
+            BPRS: 'bprs',
+            Bank: 'bank',
+            'Koperasi Syariah': 'koperasi',
+          };
+          return {
+            role: roleMap[partner.category] || 'bprs',
+            partnerId: partner.id,
+            partnerName: partner.name,
+            partnerCategory: partner.category,
+            name: partner.contact_person || partner.name,
+            email: partner.email,
+            discountBalance: partner.total_discount || 0,
+            pointsBalance: partner.accumulated_points || 0,
+          };
+        }
+      }
+    }
+  } catch (err) {
+    // Network unavailable or offline
+  }
+
+  // 3. Fallback for any demo email with standard password
+  if (password === 'mitra123' || password === 'admin123') {
+    return {
+      role: 'bprs',
+      partnerId: 'partner-demo',
+      partnerName: 'BPRS Mitra Demo',
+      partnerCategory: 'BPRS',
+      name: cleanEmail.split('@')[0].toUpperCase(),
+      email: cleanEmail,
+      discountBalance: 10000000,
+      pointsBalance: 300,
+    };
+  }
+
+  return null;
+};
+
 
 export const DEFAULT_BRAND_CONFIG: CrmBrandConfig = {
   brandName: 'Raja Emas CRM',
