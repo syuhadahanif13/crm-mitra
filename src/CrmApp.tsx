@@ -11,7 +11,6 @@ import {
   Sun,
   Moon,
   Building2,
-  ChevronDown,
   Edit3,
   X,
   MessageSquare,
@@ -55,48 +54,16 @@ import { ImportMitraModal } from './components/ImportMitraModal';
 import { AddManualTransactionModal } from './components/AddManualTransactionModal';
 import { BrandLogoEditorModal } from './components/BrandLogoEditorModal';
 
-const PARTNER_OPTIONS: UserSession[] = [
-  {
-    role: 'bprs',
-    partnerId: 'partner-bprs-himbarsi-01',
-    partnerName: 'BPRS Harta Insan Karimah',
-    partnerCategory: 'BPRS',
-    name: 'Ahmad Fauzi, S.E.',
-    email: 'pembiayaan@bprshik.co.id',
-    discountBalance: 12500000,
-    pointsBalance: 420,
-  },
-  {
-    role: 'bank',
-    partnerId: 'partner-bank-dki-syariah',
-    partnerName: 'Bank DKI Syariah',
-    partnerCategory: 'Bank',
-    name: 'Irfan Hakim, M.M.',
-    email: 'gold.financing@bankdki.co.id',
-    discountBalance: 28000000,
-    pointsBalance: 980,
-  },
-  {
-    role: 'koperasi',
-    partnerId: 'partner-kop-syariah-212',
-    partnerName: 'Koperasi Syariah 212',
-    partnerCategory: 'Koperasi Syariah',
-    name: 'Siti Aminah, S.Sy.',
-    email: 'koperasi212@emas.co.id',
-    discountBalance: 7500000,
-    pointsBalance: 310,
-  },
-  {
-    role: 'admin',
-    partnerId: 'rei-hq-admin',
-    partnerName: 'PT Emas Murni Asli (HQ)',
-    partnerCategory: 'Bank',
-    name: 'Super Admin REI',
-    email: 'konsorsium@rajaemas.co.id',
-    discountBalance: 50000000,
-    pointsBalance: 2500,
-  },
-];
+const DEFAULT_SESSION: UserSession = {
+  role: 'bprs',
+  partnerId: 'partner-bprs-himbarsi-01',
+  partnerName: 'BPRS Harta Insan Karimah',
+  partnerCategory: 'BPRS',
+  name: 'Ahmad Fauzi, S.E.',
+  email: 'pembiayaan@bprshik.co.id',
+  discountBalance: 12500000,
+  pointsBalance: 420,
+};
 
 export const CrmApp: React.FC = () => {
   // Default to Light Mode
@@ -112,7 +79,7 @@ export const CrmApp: React.FC = () => {
   const [userSession, setUserSession] = useState<UserSession | null>(() => loadCrmSession());
 
   const [currentUser, setCurrentUser] = useState<UserSession>(() => {
-    return loadCrmSession() || PARTNER_OPTIONS[0];
+    return loadCrmSession() || DEFAULT_SESSION;
   });
 
   const handleLogout = () => {
@@ -327,34 +294,19 @@ export const CrmApp: React.FC = () => {
                 </div>
               </div>
 
-              {/* Organization / Tenant Pill Selector */}
-              <div className="relative">
-                <div className="flex items-center justify-between p-2.5 px-3 bg-white dark:bg-gray-800/60 rounded-2xl border border-slate-200 dark:border-gray-700 hover:border-indigo-400 transition-all cursor-pointer shadow-sm">
-                  <div className="flex items-center gap-2.5 truncate">
-                    <div className="w-6 h-6 rounded-lg bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
-                      <Building2 className="w-3.5 h-3.5" />
-                    </div>
-                    <span className="text-xs font-bold text-slate-800 dark:text-white truncate">
-                      {currentUser.partnerName}
-                    </span>
-                  </div>
-                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+              {/* Organization / Partner Identity Badge (Production Mode) */}
+              <div className="flex items-center gap-2.5 p-2.5 px-3 bg-white dark:bg-gray-800/60 rounded-2xl border border-slate-200/80 dark:border-gray-700 shadow-sm">
+                <div className="w-6 h-6 rounded-lg bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
+                  <Building2 className="w-3.5 h-3.5" />
                 </div>
-
-                <select
-                  value={currentUser.partnerId}
-                  onChange={(e) => {
-                    const match = PARTNER_OPTIONS.find((p) => p.partnerId === e.target.value);
-                    if (match) setCurrentUser(match);
-                  }}
-                  className="absolute inset-0 opacity-0 cursor-pointer w-full"
-                >
-                  {PARTNER_OPTIONS.map((p) => (
-                    <option key={p.partnerId} value={p.partnerId}>
-                      {p.partnerName} ({p.partnerCategory})
-                    </option>
-                  ))}
-                </select>
+                <div className="min-w-0 flex-1">
+                  <div className="text-xs font-bold text-slate-800 dark:text-white truncate">
+                    {currentUser.partnerName}
+                  </div>
+                  <div className="text-[10px] text-slate-400 dark:text-gray-500 truncate">
+                    {currentUser.partnerCategory}
+                  </div>
+                </div>
               </div>
 
               {/* Navigation Menu */}
