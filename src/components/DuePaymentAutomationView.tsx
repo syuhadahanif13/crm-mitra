@@ -173,61 +173,133 @@ export const DuePaymentAutomationView: React.FC<DuePaymentAutomationViewProps> =
 
   return (
     <div className="space-y-6">
-      {/* Header Banner */}
-      <div className="bg-gradient-to-r from-amber-600 via-amber-700 to-amber-900 rounded-2xl p-6 text-white shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      {/* Top Header & Control Bar (Audime Style) */}
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/30 text-amber-200 text-xs font-semibold mb-2">
-            <Bell className="w-3.5 h-3.5 text-amber-300" />
-            Jadwal Jatuh Tempo
-          </div>
-          <h2 className="text-2xl font-bold">Pengingat Tagihan & WhatsApp</h2>
-          <p className="text-amber-100 text-sm mt-1 max-w-2xl">
-            Kirim pengingat tagihan angsuran pembiayaan emas langsung ke WhatsApp nasabah.
+          <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+            Jatuh Tempo & Otomasi Tagihan
+          </h2>
+          <p className="text-xs text-slate-400 dark:text-gray-500 mt-0.5">
+            Monitoring jadwal angsuran emas, kirim pengingat otomatis ke WhatsApp nasabah
           </p>
         </div>
-        <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-3 rounded-xl border border-white/20">
-          <Bell className="w-6 h-6 text-amber-300" />
-          <div>
-            <div className="text-xs text-amber-200">Total Tagihan Aktif</div>
-            <div className="text-lg font-bold">{totalDueCount} Nasabah</div>
+
+        {/* Month & Search Controls */}
+        <div className="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
+          {/* Month Selector Pill */}
+          <div className="flex items-center gap-1.5 bg-white dark:bg-gray-900 px-3 py-1.5 rounded-full border border-slate-200/80 dark:border-gray-800 text-xs font-bold text-slate-700 dark:text-gray-200 shadow-sm">
+            <Calendar className="w-3.5 h-3.5 text-indigo-500" />
+            <input
+              type="month"
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value)}
+              className="bg-transparent border-none text-xs font-bold text-slate-700 dark:text-gray-200 focus:outline-none cursor-pointer"
+            />
+          </div>
+
+          {/* Search Box Pill */}
+          <div className="relative flex-1 sm:w-64">
+            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              placeholder="Cari nasabah, no akad, HP..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-9 pr-4 py-1.5 text-xs bg-white dark:bg-gray-900 border border-slate-200/80 dark:border-gray-800 rounded-full text-slate-800 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 shadow-sm"
+            />
           </div>
         </div>
       </div>
 
-      {/* Due Highlight Card: Ibu Aini 10 Oktober */}
-      <div className="bg-amber-50 dark:bg-amber-950/40 border-2 border-amber-400/60 rounded-2xl p-5 shadow-sm">
+      {/* KPI Stats Cards (Audime 4-Column Layout) */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 border border-slate-100 dark:border-gray-800 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.04)]">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-medium text-slate-400 dark:text-gray-500">Jatuh Tempo Bulan Ini</span>
+            <div className="w-8 h-8 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+              <Clock className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="text-2xl font-black text-amber-600 dark:text-amber-400 mt-2">
+            {totalDueCount} <span className="text-xs font-semibold text-slate-400">Tagihan</span>
+          </div>
+          <p className="text-[11px] text-slate-400 dark:text-gray-500 mt-1">Perlu pengingat WhatsApp</p>
+        </div>
+
+        <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 border border-slate-100 dark:border-gray-800 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.04)]">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-medium text-slate-400 dark:text-gray-500">Menunggak (Overdue)</span>
+            <div className="w-8 h-8 rounded-xl bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 flex items-center justify-center">
+              <AlertTriangle className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="text-2xl font-black text-rose-600 dark:text-rose-400 mt-2">
+            {totalOverdueCount} <span className="text-xs font-semibold text-slate-400">Tagihan</span>
+          </div>
+          <p className="text-[11px] text-slate-400 dark:text-gray-500 mt-1">Perlu eskalasi penagihan</p>
+        </div>
+
+        <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 border border-slate-100 dark:border-gray-800 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.04)]">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-medium text-slate-400 dark:text-gray-500">Sudah Lunas</span>
+            <div className="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+              <CheckCircle2 className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="text-2xl font-black text-emerald-600 dark:text-emerald-400 mt-2">
+            {totalPaidCount} <span className="text-xs font-semibold text-slate-400">Tagihan</span>
+          </div>
+          <p className="text-[11px] text-slate-400 dark:text-gray-500 mt-1">Tercatat aman di sistem</p>
+        </div>
+
+        <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 border border-slate-100 dark:border-gray-800 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.04)]">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-medium text-slate-400 dark:text-gray-500">Total Nilai Tagihan</span>
+            <div className="w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+              <CreditCard className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="text-xl font-black text-slate-900 dark:text-white mt-2 truncate">
+            {formatRupiah(totalAmountDueMonth)}
+          </div>
+          <p className="text-[11px] text-slate-400 dark:text-gray-500 mt-1">Filter bulan aktif</p>
+        </div>
+      </div>
+
+      {/* Due Highlight Card: Ibu Aini 10 Oktober (Audime High-Priority Card) */}
+      <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 border-2 border-amber-300 dark:border-amber-700/60 shadow-[0_4px_25px_-5px_rgba(245,158,11,0.08)]">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div className="flex items-start gap-3">
-            <div className="p-3 bg-amber-500 text-white rounded-xl shadow-md">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-400 text-white flex items-center justify-center shadow-md shadow-amber-500/30 shrink-0">
               <Clock className="w-6 h-6" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <span className="font-bold text-gray-900 dark:text-white text-base">
-                  Tagihan Jatuh Tempo: Ibu Aini (42 Tahun) - 10 Oktober 2026
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="font-extrabold text-slate-900 dark:text-white text-base">
+                  Ibu Aini (42 Tahun) — Jatuh Tempo 10 Oktober 2026
                 </span>
-                <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-amber-500 text-white">
-                  Jatuh Tempo Hari Ini
+                <span className="px-2.5 py-0.5 text-[10px] font-bold rounded-full bg-amber-500 text-white shadow-sm">
+                  Hari Ini
                 </span>
               </div>
-              <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">
+              <p className="text-xs text-slate-500 dark:text-gray-400 mt-1">
                 Cicilan 10 Gram Emas LM SNI 999.9 (Akad 1 Tahun) • Angsuran ke-5 dari 12 Bulan • Mitra BPRS Harta Insan Karimah
               </p>
-              <div className="flex flex-wrap gap-4 mt-2 text-xs text-gray-700 dark:text-gray-300">
-                <span className="flex items-center gap-1 font-semibold text-amber-700 dark:text-amber-300">
+              <div className="flex flex-wrap items-center gap-4 mt-2.5 text-xs text-slate-600 dark:text-gray-300">
+                <span className="font-extrabold text-amber-600 dark:text-amber-400 flex items-center gap-1">
                   <CreditCard className="w-3.5 h-3.5" /> Tagihan: {formatRupiah(1859375)}
                 </span>
-                <span className="flex items-center gap-1">
+                <span className="flex items-center gap-1 text-slate-500">
                   <Phone className="w-3.5 h-3.5" /> 0812-9876-5432
                 </span>
-                <span className="flex items-center gap-1">
+                <span className="flex items-center gap-1 text-slate-500">
                   <Calendar className="w-3.5 h-3.5" /> 10 Oktober 2026
                 </span>
               </div>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
             {allInstallments.find((i) => i.customerName.includes('Aini') && i.dueDate === '2026-10-10') && (
               <>
                 <button
@@ -238,10 +310,10 @@ export const DuePaymentAutomationView: React.FC<DuePaymentAutomationViewProps> =
                     if (ainiItem) handleSendReminder(ainiItem);
                   }}
                   disabled={sendingId === `${allInstallments.find((i) => i.customerName.includes('Aini'))?.contractId}-5`}
-                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white rounded-xl text-xs font-semibold shadow-md flex items-center gap-1.5 transition-all"
+                  className="px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 disabled:opacity-50 text-white rounded-full text-xs font-bold shadow-md shadow-emerald-500/20 flex items-center gap-1.5 transition-all"
                 >
                   <Send className="w-3.5 h-3.5" />
-                  {sendingId?.includes('5') ? 'Mengirim WhatsApp...' : 'Kirim Reminder WA Otomatis'}
+                  <span>{sendingId?.includes('5') ? 'Mengirim WhatsApp...' : 'Kirim Reminder WA Otomatis'}</span>
                 </button>
 
                 <a
@@ -251,9 +323,10 @@ export const DuePaymentAutomationView: React.FC<DuePaymentAutomationViewProps> =
                   })}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-3 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-xl text-xs font-medium flex items-center gap-1.5 border border-gray-300 dark:border-gray-600"
+                  className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-slate-700 dark:text-gray-200 rounded-full text-xs font-semibold border border-slate-200 dark:border-gray-700 flex items-center gap-1.5 transition-colors"
                 >
-                  <ExternalLink className="w-3.5 h-3.5" /> Buka Web WA
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>Buka Web WA</span>
                 </a>
               </>
             )}
@@ -264,17 +337,17 @@ export const DuePaymentAutomationView: React.FC<DuePaymentAutomationViewProps> =
       {/* Feedback Toast */}
       {feedbackMsg && (
         <div
-          className={`p-4 rounded-xl text-sm font-medium flex items-center justify-between shadow-md ${
+          className={`p-4 rounded-2xl text-xs font-medium flex items-center justify-between shadow-sm ${
             feedbackMsg.type === 'success'
-              ? 'bg-emerald-50 text-emerald-800 border border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-200'
-              : 'bg-rose-50 text-rose-800 border border-rose-300 dark:bg-rose-950/60 dark:text-rose-200'
+              ? 'bg-emerald-50 text-emerald-800 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-200'
+              : 'bg-rose-50 text-rose-800 border border-rose-200 dark:bg-rose-950/60 dark:text-rose-200'
           }`}
         >
           <div className="flex items-center gap-2">
             {feedbackMsg.type === 'success' ? (
-              <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
             ) : (
-              <AlertTriangle className="w-5 h-5 text-rose-600" />
+              <AlertTriangle className="w-4 h-4 text-rose-600" />
             )}
             <span>{feedbackMsg.text}</span>
           </div>
@@ -287,80 +360,29 @@ export const DuePaymentAutomationView: React.FC<DuePaymentAutomationViewProps> =
         </div>
       )}
 
-      {/* KPI Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-4 rounded-xl shadow-sm">
-          <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-            <span>Jatuh Tempo Hari Ini/Bulan Ini</span>
-            <Clock className="w-4 h-4 text-amber-500" />
-          </div>
-          <div className="text-2xl font-bold text-amber-600 mt-1">{totalDueCount} Tagihan</div>
-          <div className="text-xs text-gray-400 mt-1">Perlu pengingat WhatsApp</div>
-        </div>
-
-        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-4 rounded-xl shadow-sm">
-          <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-            <span>Menunggak (Overdue)</span>
-            <AlertTriangle className="w-4 h-4 text-rose-500" />
-          </div>
-          <div className="text-2xl font-bold text-rose-600 mt-1">{totalOverdueCount} Tagihan</div>
-          <div className="text-xs text-gray-400 mt-1">Perlu eskalasi penagihan</div>
-        </div>
-
-        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-4 rounded-xl shadow-sm">
-          <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-            <span>Sudah Terbayar Lunas</span>
-            <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-          </div>
-          <div className="text-2xl font-bold text-emerald-600 mt-1">{totalPaidCount} Tagihan</div>
-          <div className="text-xs text-gray-400 mt-1">Tercatat di sistem</div>
-        </div>
-
-        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-4 rounded-xl shadow-sm">
-          <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-            <span>Total Tagihan Terpilih</span>
-            <CreditCard className="w-4 h-4 text-blue-500" />
-          </div>
-          <div className="text-xl font-bold text-gray-900 dark:text-white mt-1">
-            {formatRupiah(totalAmountDueMonth)}
-          </div>
-          <div className="text-xs text-gray-400 mt-1">Filter bulan aktif</div>
-        </div>
-      </div>
-
-      {/* Filter and Search Bar */}
-      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-4 rounded-xl shadow-sm flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
-        <div className="flex-1 relative">
-          <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-          <input
-            type="text"
-            placeholder="Cari nama nasabah, nomor akad, no HP..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
-          />
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-300">
-            <Calendar className="w-4 h-4 text-gray-400" />
-            <input
-              type="month"
-              value={selectedMonth}
-              onChange={(e) => setSelectedMonth(e.target.value)}
-              className="text-xs bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-2 py-1.5 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-1 focus:ring-amber-500"
-            />
+      {/* Main Table Card (Audime Rounded-3xl Card) */}
+      <div className="bg-white dark:bg-gray-900 rounded-3xl border border-slate-100 dark:border-gray-800 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.04)] overflow-hidden">
+        {/* Table Top Controls & Filter Tabs */}
+        <div className="p-5 border-b border-slate-100 dark:border-gray-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <h3 className="font-bold text-slate-900 dark:text-white text-base">
+              Daftar Jadwal Angsuran & Penagihan
+            </h3>
+            <p className="text-xs text-slate-400 dark:text-gray-500 mt-0.5">
+              Menampilkan {filteredInstallments.length} tagihan sesuai filter status
+            </p>
           </div>
 
-          <div className="flex rounded-lg border border-gray-200 dark:border-gray-700 p-0.5 bg-gray-100 dark:bg-gray-800 text-xs">
+          {/* Filter Pills (Audime Style) */}
+          <div className="flex p-1 bg-slate-100 dark:bg-gray-800 rounded-full text-xs font-semibold text-slate-600 dark:text-gray-300 overflow-x-auto max-w-full">
             {(['All', 'Jatuh Tempo', 'Menunggak', 'Mendatang', 'Lunas'] as const).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setStatusFilter(tab)}
-                className={`px-3 py-1 rounded-md font-medium transition-all ${
+                className={`px-3 py-1 rounded-full transition-all whitespace-nowrap ${
                   statusFilter === tab
-                    ? 'bg-white dark:bg-gray-900 text-amber-600 dark:text-amber-400 shadow-sm'
-                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                    ? 'bg-white dark:bg-gray-700 text-indigo-600 dark:text-indigo-300 shadow-sm'
+                    : 'hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 {tab}
@@ -368,27 +390,25 @@ export const DuePaymentAutomationView: React.FC<DuePaymentAutomationViewProps> =
             ))}
           </div>
         </div>
-      </div>
 
-      {/* Main Table */}
-      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden shadow-sm">
+        {/* Table Container */}
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-gray-600 dark:text-gray-300">
-            <thead className="bg-gray-50 dark:bg-gray-800/60 text-xs uppercase font-semibold text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-800">
+          <table className="w-full text-left text-xs text-slate-600 dark:text-gray-300">
+            <thead className="bg-slate-50/70 dark:bg-gray-800/50 text-[11px] uppercase font-bold text-slate-500 dark:text-gray-400 border-b border-slate-100 dark:border-gray-800">
               <tr>
-                <th className="py-3.5 px-4">Nasabah & Kontak</th>
+                <th className="py-3.5 px-5">Nasabah & Kontak</th>
                 <th className="py-3.5 px-4">No. Akad & Mitra</th>
                 <th className="py-3.5 px-4">Angsuran Ke</th>
                 <th className="py-3.5 px-4">Jatuh Tempo</th>
-                <th className="py-3.5 px-4">Nominal</th>
+                <th className="py-3.5 px-4">Nominal Tagihan</th>
                 <th className="py-3.5 px-4">Status & Pengingat</th>
-                <th className="py-3.5 px-4 text-center">Aksi Otomasi WA</th>
+                <th className="py-3.5 px-5 text-center">Aksi Otomasi WA</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
+            <tbody className="divide-y divide-slate-100 dark:divide-gray-800/80">
               {filteredInstallments.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-gray-400">
+                  <td colSpan={7} className="py-12 text-center text-slate-400 text-xs">
                     Tidak ada jadwal tagihan yang cocok dengan filter pencarian.
                   </td>
                 </tr>
@@ -400,49 +420,49 @@ export const DuePaymentAutomationView: React.FC<DuePaymentAutomationViewProps> =
                   return (
                     <tr
                       key={key}
-                      className={`hover:bg-gray-50/80 dark:hover:bg-gray-800/40 transition-colors ${
+                      className={`hover:bg-slate-50/60 dark:hover:bg-gray-800/40 transition-colors ${
                         item.status === 'Jatuh Tempo'
-                          ? 'bg-amber-50/40 dark:bg-amber-950/20'
+                          ? 'bg-amber-50/30 dark:bg-amber-950/10'
                           : item.status === 'Menunggak'
-                          ? 'bg-rose-50/40 dark:bg-rose-950/20'
+                          ? 'bg-rose-50/30 dark:bg-rose-950/10'
                           : ''
                       }`}
                     >
                       {/* Customer Info */}
-                      <td className="py-3.5 px-4">
-                        <div className="font-semibold text-gray-900 dark:text-white flex items-center gap-1.5">
+                      <td className="py-3.5 px-5">
+                        <div className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
                           {item.customerName}
-                          <span className="text-xs text-gray-400 font-normal">({item.customerAge} th)</span>
+                          <span className="text-[11px] text-slate-400 font-normal">({item.customerAge} th)</span>
                         </div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1 mt-0.5">
+                        <div className="text-[11px] text-slate-400 dark:text-gray-500 flex items-center gap-1 mt-0.5">
                           <Phone className="w-3 h-3" /> {item.customerPhone}
                         </div>
                       </td>
 
                       {/* Contract & Partner */}
                       <td className="py-3.5 px-4">
-                        <div className="font-mono text-xs font-semibold text-amber-600 dark:text-amber-400">
+                        <div className="font-mono text-xs font-bold text-indigo-600 dark:text-indigo-400">
                           {item.contractNumber}
                         </div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1 mt-0.5">
+                        <div className="text-[11px] text-slate-400 dark:text-gray-500 flex items-center gap-1 mt-0.5">
                           <Building2 className="w-3 h-3" /> {item.partnerName} ({formatGrams(item.goldWeightGrams)})
                         </div>
                       </td>
 
                       {/* Installment Number */}
                       <td className="py-3.5 px-4">
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200">
-                          Bulan ke-{item.installmentNumber} / {item.totalInstallments}
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-gray-800 text-slate-700 dark:text-gray-300">
+                          Bulan {item.installmentNumber}/{item.totalInstallments}
                         </span>
                       </td>
 
                       {/* Due Date */}
                       <td className="py-3.5 px-4">
-                        <div className="font-semibold text-gray-900 dark:text-white text-sm">
+                        <div className="font-bold text-slate-900 dark:text-white">
                           {item.dueDate}
                         </div>
                         {item.paidDate && (
-                          <div className="text-xs text-emerald-600 dark:text-emerald-400 mt-0.5">
+                          <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium mt-0.5">
                             Dibayar: {item.paidDate}
                           </div>
                         )}
@@ -450,10 +470,10 @@ export const DuePaymentAutomationView: React.FC<DuePaymentAutomationViewProps> =
 
                       {/* Amount */}
                       <td className="py-3.5 px-4">
-                        <div className="font-bold text-gray-900 dark:text-white">
+                        <div className="font-extrabold text-slate-900 dark:text-white">
                           {formatRupiah(item.amount)}
                         </div>
-                        <div className="text-[11px] text-gray-400">
+                        <div className="text-[10px] text-slate-400">
                           Pokok: {formatRupiah(item.principalAmount)}
                         </div>
                       </td>
@@ -462,21 +482,21 @@ export const DuePaymentAutomationView: React.FC<DuePaymentAutomationViewProps> =
                       <td className="py-3.5 px-4">
                         <div className="flex flex-col gap-1 items-start">
                           <span
-                            className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                            className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
                               item.status === 'Lunas'
-                                ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300'
+                                ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
                                 : item.status === 'Jatuh Tempo'
-                                ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300 border border-amber-300 dark:border-amber-700'
+                                ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-300/60'
                                 : item.status === 'Menunggak'
-                                ? 'bg-rose-100 text-rose-800 dark:bg-rose-900/50 dark:text-rose-300 border border-rose-300 dark:border-rose-700'
-                                : 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300'
+                                ? 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 border border-rose-300/60'
+                                : 'bg-slate-100 text-slate-700 dark:bg-gray-800 dark:text-gray-300'
                             }`}
                           >
                             {item.status}
                           </span>
 
                           {item.reminderSent && (
-                            <span className="text-[11px] text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                            <span className="text-[10px] text-emerald-600 dark:text-emerald-400 flex items-center gap-1 font-semibold">
                               <MessageSquare className="w-3 h-3" />
                               WA Terkirim {item.reminderSentAt ? item.reminderSentAt.split('T')[0] : ''}
                             </span>
@@ -485,18 +505,18 @@ export const DuePaymentAutomationView: React.FC<DuePaymentAutomationViewProps> =
                       </td>
 
                       {/* Actions */}
-                      <td className="py-3.5 px-4">
-                        <div className="flex items-center justify-center gap-2">
+                      <td className="py-3.5 px-5">
+                        <div className="flex items-center justify-center gap-1.5">
                           {item.status !== 'Lunas' ? (
                             <>
                               <button
                                 onClick={() => handleSendReminder(item)}
                                 disabled={isSending}
-                                title="Kirim Otomatis via API Fonnte WhatsApp"
-                                className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white rounded-lg text-xs font-medium flex items-center gap-1 shadow-sm transition-all"
+                                title="Kirim Pengingat Otomatis via API WhatsApp"
+                                className="px-3 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 disabled:opacity-50 text-white rounded-full text-xs font-bold flex items-center gap-1 shadow-sm transition-all"
                               >
                                 <Send className="w-3 h-3" />
-                                {isSending ? 'Mengirim...' : 'Kirim WA'}
+                                <span>{isSending ? 'Mengirim...' : 'Kirim WA'}</span>
                               </button>
 
                               <a
@@ -507,7 +527,7 @@ export const DuePaymentAutomationView: React.FC<DuePaymentAutomationViewProps> =
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 title="Kirim via Web WhatsApp Manual"
-                                className="p-1.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg text-xs border border-gray-300 dark:border-gray-600 transition-colors"
+                                className="p-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-slate-700 dark:text-gray-300 rounded-full border border-slate-200 dark:border-gray-700 transition-colors"
                               >
                                 <ExternalLink className="w-3.5 h-3.5" />
                               </a>
@@ -515,13 +535,13 @@ export const DuePaymentAutomationView: React.FC<DuePaymentAutomationViewProps> =
                               <button
                                 onClick={() => handleMarkAsPaid(item)}
                                 title="Tandai Sudah Dibayar"
-                                className="px-2.5 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 rounded-lg text-xs font-medium border border-blue-200 dark:border-blue-800 transition-colors"
+                                className="px-2.5 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 rounded-full text-xs font-bold border border-indigo-200/60 dark:border-indigo-800 transition-colors"
                               >
                                 Catat Lunas
                               </button>
                             </>
                           ) : (
-                            <span className="text-xs text-emerald-600 dark:text-emerald-400 flex items-center gap-1 font-medium">
+                            <span className="text-xs text-emerald-600 dark:text-emerald-400 flex items-center gap-1 font-bold">
                               <CheckCircle2 className="w-4 h-4" /> Lunas
                             </span>
                           )}

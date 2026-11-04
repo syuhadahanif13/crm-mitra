@@ -97,7 +97,7 @@ export const StockOpnameView: React.FC<StockOpnameViewProps> = ({
 
     onUpdateRecord(updatedRecord);
     setIsAuditing(false);
-    setFeedback('Hasil Stock Opname berhasil disimpan dan diverifikasi!');
+    setFeedback('Hasil Stock Opname berhasil disimpan dan diverifikasi.');
     setTimeout(() => setFeedback(null), 4000);
   };
 
@@ -144,49 +144,52 @@ export const StockOpnameView: React.FC<StockOpnameViewProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Header Banner */}
-      <div className="bg-gradient-to-r from-amber-700 via-amber-800 to-amber-950 rounded-2xl p-6 text-white shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      {/* Header Bar - Audime Benchmark */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/30 text-amber-200 text-xs font-semibold mb-2">
-            <ShieldCheck className="w-3.5 h-3.5 text-amber-300" />
-            Stock Opname Brankas
-          </div>
-          <h2 className="text-2xl font-bold">Stock Opname & Rekonsiliasi Emas</h2>
-          <p className="text-amber-100 text-sm mt-1 max-w-2xl">
-            Pencocokan fisik emas batangan di brankas dengan saldo sistem, termasuk alokasi untuk akad cicilan berjalan.
+          <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+            Stock Opname & Rekonsiliasi Emas
+          </h2>
+          <p className="text-xs text-slate-400 dark:text-gray-500 mt-0.5">
+            Pencocokan fisik emas batangan di brankas dengan saldo sistem & alokasi akad cicilan
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={handlePrintOpname}
-            className="px-3.5 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-semibold backdrop-blur-sm border border-white/20 flex items-center gap-1.5 transition-colors"
+            className="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-slate-700 dark:text-gray-200 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm"
           >
-            <Printer className="w-4 h-4" /> Cetak Berita Acara
+            <Printer className="w-3.5 h-3.5" />
+            <span>Cetak Berita Acara</span>
           </button>
+
           {!isAuditing ? (
             <button
               onClick={() => setIsAuditing(true)}
-              className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-semibold shadow-md flex items-center gap-1.5 transition-colors"
+              className="px-5 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-full text-xs font-bold shadow-md shadow-indigo-500/25 flex items-center gap-1.5 transition-all active:scale-95"
             >
-              <RefreshCw className="w-4 h-4" /> Mulai Audit Fisik
+              <RefreshCw className="w-3.5 h-3.5" />
+              <span>Mulai Audit Fisik</span>
             </button>
           ) : (
             <div className="flex items-center gap-2">
               <button
                 onClick={handleSaveAudit}
-                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold shadow-md flex items-center gap-1.5 transition-colors"
+                className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full text-xs font-bold shadow-md shadow-emerald-600/25 flex items-center gap-1.5 transition-all active:scale-95"
               >
-                <Check className="w-4 h-4" /> Simpan Hasil Audit
+                <Check className="w-3.5 h-3.5" />
+                <span>Simpan Hasil Audit</span>
               </button>
               <button
                 onClick={() => {
                   setIsAuditing(false);
                   if (activeRecord) setAuditItems([...activeRecord.items]);
                 }}
-                className="px-3 py-2 bg-white/20 hover:bg-white/30 text-white rounded-xl text-xs font-semibold transition-colors"
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-slate-700 dark:text-gray-200 rounded-full text-xs font-semibold transition-all"
               >
-                <X className="w-4 h-4" /> Batal
+                <X className="w-3.5 h-3.5" />
+                <span>Batal</span>
               </button>
             </div>
           )}
@@ -194,28 +197,28 @@ export const StockOpnameView: React.FC<StockOpnameViewProps> = ({
       </div>
 
       {feedback && (
-        <div className="p-4 rounded-xl text-sm font-medium bg-emerald-50 text-emerald-800 border border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-200 flex items-center gap-2">
-          <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+        <div className="p-4 rounded-2xl text-xs font-medium bg-emerald-50 text-emerald-800 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-200 dark:border-emerald-800 flex items-center gap-2">
+          <CheckCircle2 className="w-4 h-4 text-emerald-600" />
           <span>{feedback}</span>
         </div>
       )}
 
-      {/* Audit Session Selector & Details */}
-      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-5 shadow-sm">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-gray-100 dark:border-gray-800 pb-4 mb-4">
+      {/* Audit Session Selector & Details Card */}
+      <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 border border-slate-100 dark:border-gray-800 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.04)]">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-100 dark:border-gray-800 pb-5 mb-5">
           <div className="flex flex-wrap items-center gap-3">
-            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              Pilih Dokumen Opname:
+            <label className="text-xs font-bold text-slate-500 dark:text-gray-400">
+              Dokumen Opname:
             </label>
             <select
               value={selectedRecordId}
               onChange={(e) => setSelectedRecordId(e.target.value)}
               disabled={isAuditing}
-              className="px-3 py-1.5 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg text-gray-900 dark:text-white font-medium focus:ring-2 focus:ring-amber-500"
+              className="px-4 py-2 text-xs bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-700 rounded-full text-slate-900 dark:text-white font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
               {records.map((r) => (
                 <option key={r.id} value={r.id}>
-                  {r.opnameNumber} ({r.date}) - Status: {r.status}
+                  {r.opnameNumber} ({r.date}) — {r.status}
                 </option>
               ))}
             </select>
@@ -223,180 +226,205 @@ export const StockOpnameView: React.FC<StockOpnameViewProps> = ({
             <button
               onClick={handleCreateNewAudit}
               disabled={isAuditing}
-              className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg text-xs font-medium flex items-center gap-1 border border-gray-300 dark:border-gray-600"
+              className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-slate-700 dark:text-gray-300 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-colors disabled:opacity-50"
             >
-              <Plus className="w-3.5 h-3.5" /> Buka Audit Baru
+              <Plus className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+              <span>Buka Audit Baru</span>
             </button>
           </div>
 
           <div className="flex items-center gap-2">
             <span
-              className={`px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5 ${
+              className={`px-3.5 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 ${
                 activeRecord?.status === 'Selesai'
-                  ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300'
+                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800'
                   : activeRecord?.status === 'Ada Selisih'
-                  ? 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 border border-rose-300'
-                  : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-300'
+                  ? 'bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800'
+                  : 'bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800'
               }`}
             >
               {activeRecord?.status === 'Selesai' ? (
-                <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
               ) : (
-                <AlertTriangle className="w-4 h-4 text-amber-600" />
+                <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
               )}
-              Status: {activeRecord?.status}
+              <span>Status: {activeRecord?.status}</span>
             </span>
           </div>
         </div>
 
         {/* Audit Meta Information */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-gray-600 dark:text-gray-300">
-          <div className="flex items-center gap-2">
-            <Building className="w-4 h-4 text-amber-600 shrink-0" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <div className="flex items-center gap-3 p-3 rounded-2xl bg-slate-50/70 dark:bg-gray-800/40 border border-slate-100 dark:border-gray-800">
+            <div className="w-9 h-9 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shrink-0">
+              <Building className="w-4 h-4" />
+            </div>
             <div>
-              <span className="text-gray-400 block">Lokasi Brankas Khazanah:</span>
-              <span className="font-semibold text-gray-900 dark:text-white">
+              <span className="text-[11px] text-slate-400 dark:text-gray-500 block">Lokasi Khazanah</span>
+              <span className="font-semibold text-slate-800 dark:text-gray-200">
                 {activeRecord?.vaultLocation}
               </span>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <UserCheck className="w-4 h-4 text-amber-600 shrink-0" />
+          <div className="flex items-center gap-3 p-3 rounded-2xl bg-slate-50/70 dark:bg-gray-800/40 border border-slate-100 dark:border-gray-800">
+            <div className="w-9 h-9 rounded-xl bg-purple-50 dark:bg-purple-950/60 flex items-center justify-center text-purple-600 dark:text-purple-400 shrink-0">
+              <UserCheck className="w-4 h-4" />
+            </div>
             <div>
-              <span className="text-gray-400 block">Auditor / Verifikator:</span>
-              <span className="font-semibold text-gray-900 dark:text-white">
+              <span className="text-[11px] text-slate-400 dark:text-gray-500 block">Auditor / Verifikator</span>
+              <span className="font-semibold text-slate-800 dark:text-gray-200">
                 {activeRecord?.auditorName} ({activeRecord?.auditorRole})
               </span>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-amber-600 shrink-0" />
+          <div className="flex items-center gap-3 p-3 rounded-2xl bg-slate-50/70 dark:bg-gray-800/40 border border-slate-100 dark:border-gray-800">
+            <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/60 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
+              <Calendar className="w-4 h-4" />
+            </div>
             <div>
-              <span className="text-gray-400 block">Tanggal & Waktu Verifikasi:</span>
-              <span className="font-semibold text-gray-900 dark:text-white">
-                {activeRecord?.date} • {activeRecord?.verifiedAt || 'Selesai Terverifikasi'}
+              <span className="text-[11px] text-slate-400 dark:text-gray-500 block">Tanggal & Waktu</span>
+              <span className="font-semibold text-slate-800 dark:text-gray-200">
+                {activeRecord?.date} • {activeRecord?.verifiedAt ? 'Terverifikasi' : 'Dalam Proses'}
               </span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* KPI Summary Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-4 rounded-xl shadow-sm">
-          <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-            <span>Total Stok Sistem</span>
-            <Boxes className="w-4 h-4 text-blue-500" />
+      {/* KPI Metric Tiles - Matching Audime Design */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 border border-slate-100 dark:border-gray-800 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.04)] flex items-center justify-between">
+          <div>
+            <span className="text-[11px] font-semibold text-slate-400 dark:text-gray-500 uppercase tracking-wider block">
+              Stok Sistem
+            </span>
+            <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-1">
+              {formatGrams(activeRecord?.totalSystemGrams || 0)}
+            </div>
+            <span className="text-[11px] text-slate-400 dark:text-gray-500">Saldo pembukuan</span>
           </div>
-          <div className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
-            {formatGrams(activeRecord?.totalSystemGrams || 0)}
+          <div className="w-11 h-11 rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+            <Boxes className="w-5 h-5" />
           </div>
-          <div className="text-xs text-gray-400 mt-0.5">Saldo pembukuan</div>
         </div>
 
-        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-4 rounded-xl shadow-sm">
-          <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-            <span>Total Fisik Brankas</span>
-            <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+        <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 border border-slate-100 dark:border-gray-800 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.04)] flex items-center justify-between">
+          <div>
+            <span className="text-[11px] font-semibold text-slate-400 dark:text-gray-500 uppercase tracking-wider block">
+              Fisik Brankas
+            </span>
+            <div className="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 mt-1">
+              {formatGrams(activeRecord?.totalPhysicalGrams || 0)}
+            </div>
+            <span className="text-[11px] text-emerald-600/80 dark:text-emerald-400/80">Hasil hitung fisik</span>
           </div>
-          <div className="text-2xl font-bold text-emerald-600 mt-1">
-            {formatGrams(activeRecord?.totalPhysicalGrams || 0)}
+          <div className="w-11 h-11 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+            <CheckCircle2 className="w-5 h-5" />
           </div>
-          <div className="text-xs text-emerald-600/80 mt-0.5">Hasil hitung fisik</div>
         </div>
 
-        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-4 rounded-xl shadow-sm">
-          <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-            <span>Alokasi Cicilan Aktif</span>
-            <Lock className="w-4 h-4 text-amber-500" />
+        <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 border border-slate-100 dark:border-gray-800 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.04)] flex items-center justify-between">
+          <div>
+            <span className="text-[11px] font-semibold text-slate-400 dark:text-gray-500 uppercase tracking-wider block">
+              Alokasi Akad
+            </span>
+            <div className="text-xl sm:text-2xl font-black text-amber-600 dark:text-amber-400 mt-1">
+              {formatGrams(activeRecord?.totalAllocatedGrams || 0)}
+            </div>
+            <span className="text-[11px] text-amber-600/80 dark:text-amber-400/80">Jaminan fidusia</span>
           </div>
-          <div className="text-2xl font-bold text-amber-600 mt-1">
-            {formatGrams(activeRecord?.totalAllocatedGrams || 0)}
+          <div className="w-11 h-11 rounded-2xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+            <Lock className="w-5 h-5" />
           </div>
-          <div className="text-xs text-amber-600/80 mt-0.5">Jaminan fidusia akad</div>
         </div>
 
-        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-4 rounded-xl shadow-sm">
-          <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-            <span>Status Selisih (Varian)</span>
-            <ShieldCheck className="w-4 h-4 text-emerald-500" />
+        <div className="bg-white dark:bg-gray-900 rounded-3xl p-5 border border-slate-100 dark:border-gray-800 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.04)] flex items-center justify-between">
+          <div>
+            <span className="text-[11px] font-semibold text-slate-400 dark:text-gray-500 uppercase tracking-wider block">
+              Selisih Fisik
+            </span>
+            <div
+              className={`text-xl sm:text-2xl font-black mt-1 ${
+                (activeRecord?.totalDifferenceGrams || 0) === 0
+                  ? 'text-emerald-600 dark:text-emerald-400'
+                  : 'text-rose-600 dark:text-rose-400'
+              }`}
+            >
+              {(activeRecord?.totalDifferenceGrams || 0) === 0
+                ? '0 Gram'
+                : `${activeRecord?.totalDifferenceGrams} Gram`}
+            </div>
+            <span className="text-[11px] text-slate-400 dark:text-gray-500">
+              {(activeRecord?.totalDifferenceGrams || 0) === 0 ? '100% Akurat' : 'Perlu Investigasi'}
+            </span>
           </div>
-          <div
-            className={`text-2xl font-bold mt-1 ${
-              (activeRecord?.totalDifferenceGrams || 0) === 0 ? 'text-emerald-600' : 'text-rose-600'
-            }`}
-          >
-            {(activeRecord?.totalDifferenceGrams || 0) === 0
-              ? '0 Gram (Cocok)'
-              : `${activeRecord?.totalDifferenceGrams} Gram`}
-          </div>
-          <div className="text-xs text-gray-400 mt-0.5">
-            {(activeRecord?.totalDifferenceGrams || 0) === 0 ? '100% Akurat' : 'Perlu Investigasi'}
+          <div className="w-11 h-11 rounded-2xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
+            <ShieldCheck className="w-5 h-5" />
           </div>
         </div>
       </div>
 
       {/* Table Section */}
-      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden shadow-sm">
-        <div className="p-4 border-b border-gray-100 dark:border-gray-800 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+      <div className="bg-white dark:bg-gray-900 rounded-3xl border border-slate-100 dark:border-gray-800 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.04)] overflow-hidden">
+        <div className="p-5 border-b border-slate-100 dark:border-gray-800 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
           <div>
-            <h3 className="font-bold text-gray-900 dark:text-white text-base">
-              Rincian Keping Emas Batangan SNI per Pecahan (0.1g s/d 1000g)
+            <h3 className="font-bold text-slate-900 dark:text-white text-base">
+              Rincian Keping Emas Batangan SNI per Pecahan
             </h3>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+            <p className="text-xs text-slate-400 dark:text-gray-500 mt-0.5">
               {isAuditing
-                ? 'Mode Audit Aktif: Silakan ubah angka di kolom "Fisik Brankas" sesuai hasil hitung di khazanah.'
+                ? 'Mode Audit Aktif: Ubah angka di kolom "Fisik Brankas" sesuai hasil hitung fisik di khazanah.'
                 : 'Pecahan 10 gram mencakup 1 keping jaminan fidusia akad Ibu Aini (AKAD-REI/2026/08/0010).'}
             </p>
           </div>
 
           <div className="relative w-full md:w-64">
-            <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               placeholder="Cari pecahan / catatan..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-3 py-1.5 text-xs bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-amber-500"
+              className="w-full pl-9 pr-3.5 py-2 text-xs bg-slate-50/50 dark:bg-gray-800/50 border border-slate-200/80 dark:border-gray-800 rounded-full text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
             />
           </div>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-gray-600 dark:text-gray-300">
-            <thead className="bg-gray-50 dark:bg-gray-800/60 text-xs uppercase font-semibold text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-800">
+          <table className="w-full text-left text-xs text-slate-600 dark:text-gray-300">
+            <thead className="bg-slate-50/70 dark:bg-gray-800/50 text-[11px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 dark:border-gray-800">
               <tr>
-                <th className="py-3.5 px-4">Gramatur</th>
+                <th className="py-3.5 px-5">Gramatur</th>
                 <th className="py-3.5 px-4">Merek & Standar</th>
                 <th className="py-3.5 px-4 text-right">Stok Sistem</th>
-                <th className="py-3.5 px-4 text-right bg-amber-50/50 dark:bg-amber-950/20">Fisik Brankas</th>
-                <th className="py-3.5 px-4 text-right">Alokasi Cicilan</th>
+                <th className="py-3.5 px-4 text-right bg-indigo-50/30 dark:bg-indigo-950/20">Fisik Brankas</th>
+                <th className="py-3.5 px-4 text-right">Alokasi Akad</th>
                 <th className="py-3.5 px-4 text-right">Stok Bebas</th>
                 <th className="py-3.5 px-4 text-center">Selisih</th>
-                <th className="py-3.5 px-4">Status & Catatan Tray Brankas</th>
+                <th className="py-3.5 px-5">Catatan Tray Brankas</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
+            <tbody className="divide-y divide-slate-100 dark:divide-gray-800/60">
               {filteredItems.map((item, idx) => {
                 const isTenGramCase = item.weightGrams === 10;
                 return (
                   <tr
                     key={item.weightGrams}
-                    className={`hover:bg-gray-50/80 dark:hover:bg-gray-800/40 transition-colors ${
-                      isTenGramCase ? 'bg-amber-50/30 dark:bg-amber-950/20 font-medium' : ''
+                    className={`hover:bg-slate-50/60 dark:hover:bg-gray-800/40 transition-colors ${
+                      isTenGramCase ? 'bg-amber-50/20 dark:bg-amber-950/10' : ''
                     }`}
                   >
                     {/* Weight */}
-                    <td className="py-3.5 px-4">
-                      <div className="font-bold text-gray-900 dark:text-white flex items-center gap-1.5">
-                        <span className="p-1 rounded bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-200 text-xs">
+                    <td className="py-3.5 px-5">
+                      <div className="flex items-center gap-2">
+                        <span className="px-2.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 font-bold text-xs">
                           {formatGrams(item.weightGrams)}
                         </span>
                         {isTenGramCase && (
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-500 text-white">
-                            Jaminan Fidusia
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300">
+                            Fidusia
                           </span>
                         )}
                       </div>
@@ -404,34 +432,38 @@ export const StockOpnameView: React.FC<StockOpnameViewProps> = ({
 
                     {/* Brand */}
                     <td className="py-3.5 px-4">
-                      <div className="text-xs font-semibold text-gray-800 dark:text-gray-200">
+                      <div className="font-semibold text-slate-800 dark:text-gray-200">
                         {item.brand}
                       </div>
-                      <div className="text-[11px] text-gray-400">Kadar 999.9 (24K) SNI</div>
+                      <div className="text-[10px] text-slate-400 dark:text-gray-500">Kadar 999.9 (24K) SNI</div>
                     </td>
 
                     {/* System Stock */}
                     <td className="py-3.5 px-4 text-right font-medium">
-                      {formatNumber(item.systemStockPcs)} pcs
-                      <div className="text-[10px] text-gray-400">
+                      <span className="font-bold text-slate-900 dark:text-white">
+                        {formatNumber(item.systemStockPcs)} pcs
+                      </span>
+                      <div className="text-[10px] text-slate-400 dark:text-gray-500">
                         {(item.systemStockPcs * item.weightGrams).toLocaleString('id-ID')} g
                       </div>
                     </td>
 
                     {/* Physical Stock */}
-                    <td className="py-3.5 px-4 text-right bg-amber-50/50 dark:bg-amber-950/20">
+                    <td className="py-3.5 px-4 text-right bg-indigo-50/30 dark:bg-indigo-950/20">
                       {isAuditing ? (
                         <input
                           type="number"
                           min="0"
                           value={item.physicalStockPcs}
                           onChange={(e) => handlePhysicalChange(idx, parseInt(e.target.value) || 0)}
-                          className="w-20 px-2 py-1 text-right text-xs bg-white dark:bg-gray-800 border-2 border-amber-400 rounded-lg text-gray-900 dark:text-white font-bold focus:outline-none"
+                          className="w-20 px-2.5 py-1 text-right text-xs bg-white dark:bg-gray-800 border-2 border-indigo-500 rounded-xl text-slate-900 dark:text-white font-bold focus:outline-none"
                         />
                       ) : (
-                        <div className="font-bold text-gray-900 dark:text-white">
-                          {formatNumber(item.physicalStockPcs)} pcs
-                          <div className="text-[10px] text-emerald-600 dark:text-emerald-400">
+                        <div>
+                          <div className="font-bold text-slate-900 dark:text-white">
+                            {formatNumber(item.physicalStockPcs)} pcs
+                          </div>
+                          <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
                             {(item.physicalStockPcs * item.weightGrams).toLocaleString('id-ID')} g
                           </div>
                         </div>
@@ -440,21 +472,21 @@ export const StockOpnameView: React.FC<StockOpnameViewProps> = ({
 
                     {/* Allocated Installment */}
                     <td className="py-3.5 px-4 text-right">
-                      <span className="inline-flex items-center gap-1 font-semibold text-amber-700 dark:text-amber-400 text-xs">
+                      <span className="inline-flex items-center gap-1 font-bold text-amber-600 dark:text-amber-400">
                         <Lock className="w-3 h-3" />
                         {item.allocatedInstallmentPcs} pcs
                       </span>
-                      <div className="text-[10px] text-gray-400">
+                      <div className="text-[10px] text-slate-400 dark:text-gray-500">
                         {(item.allocatedInstallmentPcs * item.weightGrams).toLocaleString('id-ID')} g
                       </div>
                     </td>
 
                     {/* Available Stock */}
                     <td className="py-3.5 px-4 text-right">
-                      <span className="font-semibold text-blue-600 dark:text-blue-400 text-xs">
+                      <span className="font-bold text-indigo-600 dark:text-indigo-400">
                         {item.availablePcs} pcs
                       </span>
-                      <div className="text-[10px] text-gray-400">
+                      <div className="text-[10px] text-slate-400 dark:text-gray-500">
                         {(item.availablePcs * item.weightGrams).toLocaleString('id-ID')} g
                       </div>
                     </td>
@@ -462,10 +494,10 @@ export const StockOpnameView: React.FC<StockOpnameViewProps> = ({
                     {/* Difference */}
                     <td className="py-3.5 px-4 text-center">
                       <span
-                        className={`inline-block px-2 py-0.5 rounded-full text-xs font-bold ${
+                        className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-bold ${
                           item.differencePcs === 0
-                            ? 'text-emerald-700 bg-emerald-100 dark:bg-emerald-950/60 dark:text-emerald-300'
-                            : 'text-rose-700 bg-rose-100 dark:bg-rose-950/60 dark:text-rose-300'
+                            ? 'text-emerald-700 bg-emerald-50 dark:bg-emerald-950/60 dark:text-emerald-300'
+                            : 'text-rose-700 bg-rose-50 dark:bg-rose-950/60 dark:text-rose-300'
                         }`}
                       >
                         {item.differencePcs === 0
@@ -475,8 +507,8 @@ export const StockOpnameView: React.FC<StockOpnameViewProps> = ({
                     </td>
 
                     {/* Notes & Tray */}
-                    <td className="py-3.5 px-4">
-                      <div className="text-xs text-gray-700 dark:text-gray-300">{item.notes}</div>
+                    <td className="py-3.5 px-5">
+                      <div className="text-slate-600 dark:text-gray-400">{item.notes}</div>
                     </td>
                   </tr>
                 );

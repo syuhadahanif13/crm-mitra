@@ -69,7 +69,7 @@ export const AkadContractModal: React.FC<AkadContractModalProps> = ({
               href={waUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-md shadow-emerald-600/20 transition-all"
+              className="px-3.5 py-1.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-md shadow-emerald-600/20 transition-all"
               title="Kirim Salinan Akad ke WhatsApp Nasabah"
             >
               <MessageCircle className="w-3.5 h-3.5" />
@@ -77,14 +77,14 @@ export const AkadContractModal: React.FC<AkadContractModalProps> = ({
             </a>
             <button
               onClick={handlePrint}
-              className="px-3 py-1.5 rounded-xl bg-white hover:bg-gray-100 text-gray-700 font-semibold text-xs flex items-center gap-1.5 border border-gray-300 shadow-sm transition-colors"
+              className="px-3.5 py-1.5 rounded-full bg-white hover:bg-gray-100 text-gray-700 font-semibold text-xs flex items-center gap-1.5 border border-gray-300 shadow-sm transition-colors"
             >
               <Printer className="w-3.5 h-3.5" />
               <span>Cetak Dokumen</span>
             </button>
             <button
               onClick={onClose}
-              className="p-1.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-900 border border-gray-200 transition-colors"
+              className="p-1.5 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-900 border border-gray-200 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>

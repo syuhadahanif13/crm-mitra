@@ -345,7 +345,7 @@ export const ImportMitraModal: React.FC<ImportMitraModalProps> = ({
                       ) : (
                         <button
                           onClick={() => handleConvertToContract(trx)}
-                          className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-xl text-xs font-bold shadow-md shadow-indigo-500/20 flex items-center gap-1.5 transition-all active:scale-95 whitespace-nowrap"
+                          className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-full text-xs font-bold shadow-md shadow-indigo-500/20 flex items-center gap-1.5 transition-all active:scale-95 whitespace-nowrap"
                         >
                           <span>Jadikan Akad Cicilan</span>
                           <ArrowRight className="w-3.5 h-3.5" />
