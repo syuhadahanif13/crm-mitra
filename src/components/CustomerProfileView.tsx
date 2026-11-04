@@ -12,7 +12,10 @@ import {
   FileText, 
   MessageCircle,
   ChevronRight,
-  X
+  X,
+  Edit2,
+  Trash2,
+  AlertTriangle
 } from 'lucide-react';
 import { CustomerProfile, GoldInstallmentContract } from '../types';
 import { formatRupiah } from '../utils/formatters';
@@ -22,6 +25,8 @@ interface CustomerProfileViewProps {
   customers: CustomerProfile[];
   contracts: GoldInstallmentContract[];
   onAddCustomer: (customer: CustomerProfile) => void;
+  onUpdateCustomer?: (customer: CustomerProfile) => void;
+  onDeleteCustomer?: (customerId: string) => void;
   onSelectCustomerAkad: (customer: CustomerProfile) => void;
   onViewContract: (contract: GoldInstallmentContract) => void;
   darkMode?: boolean;
@@ -31,6 +36,8 @@ export const CustomerProfileView: React.FC<CustomerProfileViewProps> = ({
   customers,
   contracts,
   onAddCustomer,
+  onUpdateCustomer,
+  onDeleteCustomer,
   onSelectCustomerAkad,
   onViewContract,
   darkMode = false,
@@ -38,6 +45,40 @@ export const CustomerProfileView: React.FC<CustomerProfileViewProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCustomer, setSelectedCustomer] = useState<CustomerProfile | null>(customers[0] || null);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [editingCustomer, setEditingCustomer] = useState<CustomerProfile | null>(null);
+  const [deletingCustomer, setDeletingCustomer] = useState<CustomerProfile | null>(null);
+
+  // Keep selectedCustomer in sync with customers list
+  React.useEffect(() => {
+    if (selectedCustomer) {
+      const exists = customers.find((c) => c.id === selectedCustomer.id);
+      if (exists) {
+        setSelectedCustomer(exists);
+      } else {
+        setSelectedCustomer(customers[0] || null);
+      }
+    } else if (customers.length > 0) {
+      setSelectedCustomer(customers[0]);
+    }
+  }, [customers]);
+
+  const handleConfirmDelete = () => {
+    if (!deletingCustomer) return;
+    onDeleteCustomer?.(deletingCustomer.id);
+    if (selectedCustomer?.id === deletingCustomer.id) {
+      const remaining = customers.filter((c) => c.id !== deletingCustomer.id);
+      setSelectedCustomer(remaining[0] || null);
+    }
+    setDeletingCustomer(null);
+  };
+
+  const handleSaveEditCustomer = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingCustomer || !editingCustomer.name || !editingCustomer.phone) return;
+    onUpdateCustomer?.(editingCustomer);
+    setSelectedCustomer(editingCustomer);
+    setEditingCustomer(null);
+  };
 
   // Form states
   const [name, setName] = useState('');
@@ -233,7 +274,7 @@ export const CustomerProfileView: React.FC<CustomerProfileViewProps> = ({
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <a
                     href={getWhatsAppDirectUrl({
                       phone: selectedCustomer.phone,
@@ -246,6 +287,24 @@ export const CustomerProfileView: React.FC<CustomerProfileViewProps> = ({
                     <MessageCircle className="w-3.5 h-3.5" />
                     <span>WhatsApp</span>
                   </a>
+
+                  <button
+                    onClick={() => setEditingCustomer({ ...selectedCustomer })}
+                    className="px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-slate-700 dark:text-gray-200 font-bold text-xs flex items-center gap-1.5 border border-slate-200 dark:border-gray-700 transition-colors cursor-pointer"
+                    title="Edit Profil Nasabah"
+                  >
+                    <Edit2 className="w-3.5 h-3.5 text-indigo-500" />
+                    <span>Edit</span>
+                  </button>
+
+                  <button
+                    onClick={() => setDeletingCustomer(selectedCustomer)}
+                    className="px-3 py-1.5 rounded-full bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-900/40 text-rose-600 dark:text-rose-400 font-bold text-xs flex items-center gap-1.5 border border-rose-200/60 dark:border-rose-800/60 transition-colors cursor-pointer"
+                    title="Hapus Data Nasabah"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Hapus</span>
+                  </button>
 
                   <button
                     onClick={() => onSelectCustomerAkad(selectedCustomer)}
@@ -489,6 +548,207 @@ export const CustomerProfileView: React.FC<CustomerProfileViewProps> = ({
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Edit Nasabah (Audime Rounded-3xl Card) */}
+      {editingCustomer && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
+          <div className="w-full max-w-lg rounded-3xl p-6 shadow-2xl border border-slate-100 dark:border-gray-800 bg-white dark:bg-gray-900 text-slate-900 dark:text-white space-y-4 animate-in zoom-in-95 duration-200 my-auto">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-gray-800">
+              <h3 className="font-bold text-base flex items-center gap-2">
+                <Edit2 className="w-5 h-5 text-indigo-600" />
+                Edit Profil Nasabah
+              </h3>
+              <button
+                onClick={() => setEditingCustomer(null)}
+                className="p-1.5 rounded-full text-slate-400 hover:text-slate-700 dark:hover:text-gray-200 hover:bg-slate-100 dark:hover:bg-gray-800 cursor-pointer transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveEditCustomer} className="space-y-3.5 text-xs">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="font-semibold text-slate-600 dark:text-gray-400 block mb-1">Nama Lengkap:</label>
+                  <input
+                    type="text"
+                    required
+                    value={editingCustomer.name}
+                    onChange={(e) => setEditingCustomer({ ...editingCustomer, name: e.target.value })}
+                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500/20"
+                  />
+                </div>
+                <div>
+                  <label className="font-semibold text-slate-600 dark:text-gray-400 block mb-1">Usia (Tahun):</label>
+                  <input
+                    type="number"
+                    value={editingCustomer.age}
+                    onChange={(e) => setEditingCustomer({ ...editingCustomer, age: Number(e.target.value) || 0 })}
+                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500/20"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="font-semibold text-slate-600 dark:text-gray-400 block mb-1">Nomor WhatsApp / HP:</label>
+                  <input
+                    type="text"
+                    required
+                    value={editingCustomer.phone}
+                    onChange={(e) => setEditingCustomer({ ...editingCustomer, phone: e.target.value })}
+                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none font-mono focus:ring-2 focus:ring-indigo-500/20"
+                  />
+                </div>
+                <div>
+                  <label className="font-semibold text-slate-600 dark:text-gray-400 block mb-1">Email:</label>
+                  <input
+                    type="email"
+                    value={editingCustomer.email}
+                    onChange={(e) => setEditingCustomer({ ...editingCustomer, email: e.target.value })}
+                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500/20"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="font-semibold text-slate-600 dark:text-gray-400 block mb-1">NIK KTP:</label>
+                  <input
+                    type="text"
+                    value={editingCustomer.nik}
+                    onChange={(e) => setEditingCustomer({ ...editingCustomer, nik: e.target.value })}
+                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none font-mono focus:ring-2 focus:ring-indigo-500/20"
+                  />
+                </div>
+                <div>
+                  <label className="font-semibold text-slate-600 dark:text-gray-400 block mb-1">Pekerjaan:</label>
+                  <input
+                    type="text"
+                    value={editingCustomer.occupation}
+                    onChange={(e) => setEditingCustomer({ ...editingCustomer, occupation: e.target.value })}
+                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500/20"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="font-semibold text-slate-600 dark:text-gray-400 block mb-1">Penghasilan Bulanan (Rp):</label>
+                  <input
+                    type="number"
+                    value={editingCustomer.monthlyIncome}
+                    onChange={(e) => setEditingCustomer({ ...editingCustomer, monthlyIncome: Number(e.target.value) || 0 })}
+                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500/20"
+                  />
+                </div>
+                <div>
+                  <label className="font-semibold text-slate-600 dark:text-gray-400 block mb-1">Mitra BPRS / Lembaga:</label>
+                  <input
+                    type="text"
+                    value={editingCustomer.partnerName}
+                    onChange={(e) => setEditingCustomer({ ...editingCustomer, partnerName: e.target.value })}
+                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500/20"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="font-semibold text-slate-600 dark:text-gray-400 block mb-1">Status Nasabah:</label>
+                  <select
+                    value={editingCustomer.status}
+                    onChange={(e) => setEditingCustomer({ ...editingCustomer, status: e.target.value as any })}
+                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500/20"
+                  >
+                    <option value="Aktif">Aktif</option>
+                    <option value="Prospek">Prospek</option>
+                    <option value="Selesai">Selesai</option>
+                    <option value="Perhatian Khusus">Perhatian Khusus</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="font-semibold text-slate-600 dark:text-gray-400 block mb-1">Grade Kredit:</label>
+                  <select
+                    value={editingCustomer.creditGrade}
+                    onChange={(e) => setEditingCustomer({ ...editingCustomer, creditGrade: e.target.value as any })}
+                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500/20"
+                  >
+                    <option value="A (Sangat Lancar)">A (Sangat Lancar)</option>
+                    <option value="B (Lancar)">B (Lancar)</option>
+                    <option value="C (Kurang Lancar)">C (Kurang Lancar)</option>
+                    <option value="D (Macet)">D (Macet)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="font-semibold text-slate-600 dark:text-gray-400 block mb-1">Alamat Tempat Tinggal:</label>
+                <textarea
+                  rows={2}
+                  value={editingCustomer.address}
+                  onChange={(e) => setEditingCustomer({ ...editingCustomer, address: e.target.value })}
+                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500/20"
+                />
+              </div>
+
+              <div className="flex justify-end gap-2 pt-3 border-t border-slate-100 dark:border-gray-800">
+                <button
+                  type="button"
+                  onClick={() => setEditingCustomer(null)}
+                  className="px-4 py-2 rounded-full text-slate-600 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-800 font-semibold cursor-pointer transition-colors"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold shadow-md shadow-indigo-500/20 cursor-pointer transition-all active:scale-95"
+                >
+                  Simpan Perubahan
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Dialog Konfirmasi Hapus Nasabah (Audime Rounded-3xl Card) */}
+      {deletingCustomer && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-3xl p-6 shadow-2xl border border-slate-100 dark:border-gray-800 bg-white dark:bg-gray-900 text-slate-900 dark:text-white space-y-4 animate-in zoom-in-95 duration-200">
+            <div className="flex items-center gap-3 text-rose-600 dark:text-rose-400">
+              <div className="w-10 h-10 rounded-full bg-rose-100 dark:bg-rose-950/60 flex items-center justify-center shrink-0">
+                <AlertTriangle className="w-5 h-5 text-rose-600 dark:text-rose-400" />
+              </div>
+              <div>
+                <h3 className="font-bold text-base">Hapus Data Nasabah</h3>
+                <p className="text-xs text-slate-400 dark:text-gray-500">Tindakan ini tidak dapat dibatalkan</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-600 dark:text-gray-300 leading-relaxed">
+              Apakah Anda yakin ingin menghapus data nasabah <strong className="text-slate-900 dark:text-white">{deletingCustomer.name}</strong> ({deletingCustomer.phone})?
+            </p>
+
+            <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-gray-800">
+              <button
+                type="button"
+                onClick={() => setDeletingCustomer(null)}
+                className="px-4 py-2 rounded-full text-slate-600 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-800 font-semibold cursor-pointer transition-colors text-xs"
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmDelete}
+                className="px-5 py-2 rounded-full bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-md shadow-rose-600/20 cursor-pointer transition-all active:scale-95"
+              >
+                Ya, Hapus Nasabah
+              </button>
+            </div>
           </div>
         </div>
       )}

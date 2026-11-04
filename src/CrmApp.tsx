@@ -170,6 +170,58 @@ export const CrmApp: React.FC = () => {
     saveCrmCustomers(next);
   };
 
+  const handleUpdateCustomer = (updated: CustomerProfile) => {
+    const next = customers.map((c) => (c.id === updated.id ? updated : c));
+    setCustomers(next);
+    saveCrmCustomers(next);
+
+    // Sinkronisasi data nasabah di kontrak/akad yang berhubungan
+    const nextContracts = contracts.map((ct) =>
+      ct.customerId === updated.id
+        ? {
+            ...ct,
+            customerName: updated.name,
+            customerPhone: updated.phone,
+            customerEmail: updated.email,
+            customerAge: updated.age,
+          }
+        : ct
+    );
+    setContracts(nextContracts);
+    saveCrmContracts(nextContracts);
+  };
+
+  const handleDeleteCustomer = (customerId: string) => {
+    const next = customers.filter((c) => c.id !== customerId);
+    setCustomers(next);
+    saveCrmCustomers(next);
+  };
+
+  const handleDeleteContract = (contractId: string) => {
+    const target = contracts.find((c) => c.id === contractId);
+    const next = contracts.filter((c) => c.id !== contractId);
+    setContracts(next);
+    saveCrmContracts(next);
+
+    // Kurangi akumulasi gram dan kontrak aktif nasabah
+    if (target) {
+      const cust = customers.find((c) => c.id === target.customerId);
+      if (cust) {
+        const nextCusts = customers.map((c) =>
+          c.id === cust.id
+            ? {
+                ...c,
+                totalGramsFinanced: Math.max(0, c.totalGramsFinanced - target.goldWeightGrams),
+                activeContractsCount: Math.max(0, c.activeContractsCount - 1),
+              }
+            : c
+        );
+        setCustomers(nextCusts);
+        saveCrmCustomers(nextCusts);
+      }
+    }
+  };
+
   const handleUpdateStockOpname = (updated: StockOpnameRecord) => {
     const next = stockOpnames.map((r) => (r.id === updated.id ? updated : r));
     setStockOpnames(next);
@@ -194,8 +246,7 @@ export const CrmApp: React.FC = () => {
       id: 'due',
       label: 'Jatuh Tempo',
       icon: Clock,
-      badge: '10 Okt',
-      badgeColor: 'bg-amber-500 text-white',
+      badge: null,
     },
     {
       id: 'customers',
@@ -656,6 +707,8 @@ export const CrmApp: React.FC = () => {
                   customers={customers}
                   contracts={contracts}
                   onAddCustomer={handleAddCustomer}
+                  onUpdateCustomer={handleUpdateCustomer}
+                  onDeleteCustomer={handleDeleteCustomer}
                   onSelectCustomerAkad={(c) => {
                     setSelectedCustomerForAkad(c);
                     setActiveTab('contracts');
@@ -670,6 +723,8 @@ export const CrmApp: React.FC = () => {
                   contracts={contracts}
                   customers={customers}
                   onAddContract={handleAddContract}
+                  onUpdateContract={handleUpdateContract}
+                  onDeleteContract={handleDeleteContract}
                   onViewContractModal={(c) => setViewingContract(c)}
                   selectedCustomerForAkad={selectedCustomerForAkad}
                   darkMode={darkMode}

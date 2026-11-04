@@ -6,7 +6,10 @@ import {
   Search, 
   Eye, 
   BellRing,
-  X
+  X,
+  Edit2,
+  Trash2,
+  AlertTriangle
 } from 'lucide-react';
 import { GoldInstallmentContract, CustomerProfile } from '../types';
 import { formatRupiah, formatGrams } from '../utils/formatters';
@@ -20,6 +23,8 @@ interface InstallmentContractViewProps {
   contracts: GoldInstallmentContract[];
   customers: CustomerProfile[];
   onAddContract: (contract: GoldInstallmentContract) => void;
+  onUpdateContract?: (contract: GoldInstallmentContract) => void;
+  onDeleteContract?: (contractId: string) => void;
   onViewContractModal: (contract: GoldInstallmentContract) => void;
   selectedCustomerForAkad?: CustomerProfile | null;
   darkMode?: boolean;
@@ -29,6 +34,8 @@ export const InstallmentContractView: React.FC<InstallmentContractViewProps> = (
   contracts,
   customers,
   onAddContract,
+  onUpdateContract,
+  onDeleteContract,
   onViewContractModal,
   selectedCustomerForAkad,
   darkMode = false,
@@ -36,6 +43,8 @@ export const InstallmentContractView: React.FC<InstallmentContractViewProps> = (
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<string>('ALL');
   const [showSimulateModal, setShowSimulateModal] = useState(!!selectedCustomerForAkad);
+  const [editingContract, setEditingContract] = useState<GoldInstallmentContract | null>(null);
+  const [deletingContract, setDeletingContract] = useState<GoldInstallmentContract | null>(null);
 
   // Form states untuk pembuatan akad baru
   const [selectedCustomerId, setSelectedCustomerId] = useState<string>(
@@ -141,6 +150,26 @@ export const InstallmentContractView: React.FC<InstallmentContractViewProps> = (
     setTimeout(() => {
       onViewContractModal(newContract);
     }, 400);
+  };
+
+  const handleConfirmDeleteContract = () => {
+    if (!deletingContract) return;
+    onDeleteContract?.(deletingContract.id);
+    setActionSuccessNotice(`Akad ${deletingContract.contractNumber} berhasil dihapus.`);
+    setDeletingContract(null);
+  };
+
+  const handleSaveEditContract = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingContract) return;
+
+    const updated: GoldInstallmentContract = {
+      ...editingContract,
+    };
+
+    onUpdateContract?.(updated);
+    setActionSuccessNotice(`Perubahan akad ${editingContract.contractNumber} berhasil disimpan.`);
+    setEditingContract(null);
   };
 
   const filteredContracts = contracts.filter((ct) => {
@@ -344,13 +373,30 @@ export const InstallmentContractView: React.FC<InstallmentContractViewProps> = (
                       </span>
                     </td>
                     <td className="py-3.5 px-5 text-center">
-                      <button
-                        onClick={() => onViewContractModal(ct)}
-                        className="px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-slate-700 dark:text-gray-200 font-bold text-[11px] flex items-center gap-1 mx-auto transition-colors cursor-pointer border border-slate-200 dark:border-gray-700"
-                      >
-                        <FileText className="w-3.5 h-3.5" />
-                        <span>Akad</span>
-                      </button>
+                      <div className="flex items-center justify-center gap-1.5">
+                        <button
+                          onClick={() => onViewContractModal(ct)}
+                          className="px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-slate-700 dark:text-gray-200 font-bold text-[11px] flex items-center gap-1 transition-colors cursor-pointer border border-slate-200 dark:border-gray-700"
+                          title="Lihat Dokumen Akad"
+                        >
+                          <FileText className="w-3 h-3 text-indigo-500" />
+                          <span>Akad</span>
+                        </button>
+                        <button
+                          onClick={() => setEditingContract({ ...ct })}
+                          className="p-1.5 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-slate-600 dark:text-gray-300 transition-colors cursor-pointer border border-slate-200 dark:border-gray-700 hover:text-indigo-600 dark:hover:text-indigo-400"
+                          title="Edit Akad"
+                        >
+                          <Edit2 className="w-3 h-3" />
+                        </button>
+                        <button
+                          onClick={() => setDeletingContract(ct)}
+                          className="p-1.5 rounded-full bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-900/40 text-rose-600 dark:text-rose-400 transition-colors cursor-pointer border border-rose-200/60 dark:border-rose-800/60"
+                          title="Hapus Akad"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -532,6 +578,199 @@ export const InstallmentContractView: React.FC<InstallmentContractViewProps> = (
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Edit Akad Pembiayaan (Audime Rounded-3xl Card) */}
+      {editingContract && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
+          <div className="w-full max-w-2xl rounded-3xl p-6 shadow-2xl border border-slate-100 dark:border-gray-800 bg-white dark:bg-gray-900 text-slate-900 dark:text-white space-y-4 animate-in zoom-in-95 duration-200 my-auto">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-gray-800">
+              <div className="flex items-center gap-2">
+                <Edit2 className="w-5 h-5 text-indigo-600" />
+                <h3 className="font-bold text-base">Edit Data Akad Pembiayaan</h3>
+              </div>
+              <button
+                onClick={() => setEditingContract(null)}
+                className="p-1.5 rounded-full text-slate-400 hover:text-slate-700 dark:hover:text-gray-200 hover:bg-slate-100 dark:hover:bg-gray-800 cursor-pointer transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveEditContract} className="space-y-3.5 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="font-semibold text-slate-600 dark:text-gray-400 block mb-1">Nomor Akad:</label>
+                  <input
+                    type="text"
+                    value={editingContract.contractNumber}
+                    onChange={(e) => setEditingContract({ ...editingContract, contractNumber: e.target.value })}
+                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none font-mono font-bold focus:ring-2 focus:ring-indigo-500/20"
+                  />
+                </div>
+                <div>
+                  <label className="font-semibold text-slate-600 dark:text-gray-400 block mb-1">Nama Nasabah:</label>
+                  <input
+                    type="text"
+                    disabled
+                    value={editingContract.customerName}
+                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-100 dark:bg-gray-800/60 text-slate-500 dark:text-gray-400 outline-none cursor-not-allowed font-medium"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label className="font-semibold text-slate-600 dark:text-gray-400 block mb-1">Berat Emas (Gram):</label>
+                  <input
+                    type="number"
+                    step="any"
+                    value={editingContract.goldWeightGrams}
+                    onChange={(e) => setEditingContract({ ...editingContract, goldWeightGrams: Number(e.target.value) || 0 })}
+                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none font-bold focus:ring-2 focus:ring-indigo-500/20"
+                  />
+                </div>
+                <div>
+                  <label className="font-semibold text-slate-600 dark:text-gray-400 block mb-1">Tenor (Bulan):</label>
+                  <select
+                    value={editingContract.tenorMonths}
+                    onChange={(e) => setEditingContract({ ...editingContract, tenorMonths: Number(e.target.value) || 12 })}
+                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none font-bold focus:ring-2 focus:ring-indigo-500/20"
+                  >
+                    <option value={3}>3 Bulan</option>
+                    <option value={6}>6 Bulan</option>
+                    <option value={12}>12 Bulan (1 Tahun)</option>
+                    <option value={24}>24 Bulan (2 Tahun)</option>
+                    <option value={36}>36 Bulan (3 Tahun)</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="font-semibold text-slate-600 dark:text-gray-400 block mb-1">Tgl Jatuh Tempo:</label>
+                  <input
+                    type="number"
+                    min={1}
+                    max={31}
+                    value={editingContract.dueDateDay}
+                    onChange={(e) => setEditingContract({ ...editingContract, dueDateDay: Number(e.target.value) || 10 })}
+                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none font-bold focus:ring-2 focus:ring-indigo-500/20"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="font-semibold text-slate-600 dark:text-gray-400 block mb-1">Uang Muka / DP (Rp):</label>
+                  <input
+                    type="number"
+                    value={editingContract.downPayment}
+                    onChange={(e) => setEditingContract({ ...editingContract, downPayment: Number(e.target.value) || 0 })}
+                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none font-bold focus:ring-2 focus:ring-indigo-500/20 text-emerald-600 dark:text-emerald-400"
+                  />
+                </div>
+                <div>
+                  <label className="font-semibold text-slate-600 dark:text-gray-400 block mb-1">Angsuran per Bulan (Rp):</label>
+                  <input
+                    type="number"
+                    value={editingContract.monthlyInstallment}
+                    onChange={(e) => setEditingContract({ ...editingContract, monthlyInstallment: Number(e.target.value) || 0 })}
+                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none font-bold focus:ring-2 focus:ring-indigo-500/20 text-indigo-600 dark:text-indigo-400"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="font-semibold text-slate-600 dark:text-gray-400 block mb-1">Status Akad:</label>
+                  <select
+                    value={editingContract.status}
+                    onChange={(e) => setEditingContract({ ...editingContract, status: e.target.value as any })}
+                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none font-semibold focus:ring-2 focus:ring-indigo-500/20"
+                  >
+                    <option value="Aktif">Aktif</option>
+                    <option value="Lunas">Lunas</option>
+                    <option value="Menunggak">Menunggak</option>
+                    <option value="Dibatalkan">Dibatalkan</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="font-semibold text-slate-600 dark:text-gray-400 block mb-1">Margin Syariah (% p.a):</label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    value={editingContract.marginRateAnnualPercent}
+                    onChange={(e) => setEditingContract({ ...editingContract, marginRateAnnualPercent: Number(e.target.value) || 0 })}
+                    className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none font-bold focus:ring-2 focus:ring-indigo-500/20"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="font-semibold text-slate-600 dark:text-gray-400 block mb-1">Catatan Tambahan:</label>
+                <textarea
+                  rows={2}
+                  value={editingContract.notes || ''}
+                  onChange={(e) => setEditingContract({ ...editingContract, notes: e.target.value })}
+                  placeholder="Catatan klausul akad khusus..."
+                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500/20"
+                />
+              </div>
+
+              <div className="flex justify-end gap-2 pt-3 border-t border-slate-100 dark:border-gray-800">
+                <button
+                  type="button"
+                  onClick={() => setEditingContract(null)}
+                  className="px-4 py-2 rounded-full text-slate-600 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-800 font-semibold cursor-pointer transition-colors"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2.5 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold shadow-md shadow-indigo-500/20 cursor-pointer transition-all active:scale-95"
+                >
+                  Simpan Perubahan Akad
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Dialog Konfirmasi Hapus Akad (Audime Rounded-3xl Card) */}
+      {deletingContract && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-3xl p-6 shadow-2xl border border-slate-100 dark:border-gray-800 bg-white dark:bg-gray-900 text-slate-900 dark:text-white space-y-4 animate-in zoom-in-95 duration-200">
+            <div className="flex items-center gap-3 text-rose-600 dark:text-rose-400">
+              <div className="w-10 h-10 rounded-full bg-rose-100 dark:bg-rose-950/60 flex items-center justify-center shrink-0">
+                <AlertTriangle className="w-5 h-5 text-rose-600 dark:text-rose-400" />
+              </div>
+              <div>
+                <h3 className="font-bold text-base">Hapus Akad Pembiayaan</h3>
+                <p className="text-xs text-slate-400 dark:text-gray-500">Tindakan ini tidak dapat dibatalkan</p>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-600 dark:text-gray-300 leading-relaxed">
+              Apakah Anda yakin ingin menghapus akad <strong className="text-slate-900 dark:text-white font-mono">{deletingContract.contractNumber}</strong> atas nama <strong className="text-slate-900 dark:text-white">{deletingContract.customerName}</strong> ({formatGrams(deletingContract.goldWeightGrams)})?
+            </p>
+
+            <div className="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-gray-800">
+              <button
+                type="button"
+                onClick={() => setDeletingContract(null)}
+                className="px-4 py-2 rounded-full text-slate-600 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-800 font-semibold cursor-pointer transition-colors text-xs"
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmDeleteContract}
+                className="px-5 py-2 rounded-full bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-md shadow-rose-600/20 cursor-pointer transition-all active:scale-95"
+              >
+                Ya, Hapus Akad
+              </button>
+            </div>
           </div>
         </div>
       )}
