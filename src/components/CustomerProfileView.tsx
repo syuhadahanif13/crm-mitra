@@ -156,7 +156,12 @@ export const CustomerProfileView: React.FC<CustomerProfileViewProps> = ({
                 return (
                   <div
                     key={c.id}
-                    onClick={() => setSelectedCustomer(c)}
+                    onClick={() => {
+                      setSelectedCustomer(c);
+                      if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+                        document.getElementById('customer-dossier')?.scrollIntoView({ behavior: 'smooth' });
+                      }
+                    }}
                     className={`p-4 rounded-2xl border cursor-pointer transition-all ${
                       isSelected
                         ? 'bg-indigo-50/50 dark:bg-indigo-950/30 border-indigo-400 dark:border-indigo-600 shadow-sm ring-1 ring-indigo-400/30'
@@ -204,7 +209,7 @@ export const CustomerProfileView: React.FC<CustomerProfileViewProps> = ({
         </div>
 
         {/* Right Column: Detailed Customer Dossier (Audime Rounded-3xl Card) */}
-        <div className="lg:col-span-7">
+        <div id="customer-dossier" className="lg:col-span-7 scroll-mt-20">
           {selectedCustomer ? (
             <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 border border-slate-100 dark:border-gray-800 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.04)] space-y-6">
               {/* Header Profile */}

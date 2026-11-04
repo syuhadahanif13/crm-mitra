@@ -234,7 +234,7 @@ export const ImportMitraModal: React.FC<ImportMitraModalProps> = ({
         </div>
 
         {/* Tab selection */}
-        <div className="flex border-b border-slate-200 dark:border-gray-800 px-6 pt-3 bg-slate-50 dark:bg-gray-800/40 gap-3 text-xs font-bold">
+        <div className="flex border-b border-slate-200 dark:border-gray-800 px-4 sm:px-6 pt-3 bg-slate-50 dark:bg-gray-800/40 gap-3 text-xs font-bold overflow-x-auto whitespace-nowrap">
           <button
             onClick={() => setActiveTab('preset')}
             className={`pb-3 border-b-2 transition-all flex items-center gap-1.5 ${

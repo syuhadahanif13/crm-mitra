@@ -53,7 +53,7 @@ export const AkadContractModal: React.FC<AkadContractModalProps> = ({
       <div className="relative w-full max-w-4xl bg-white text-gray-900 rounded-3xl shadow-2xl overflow-hidden my-auto max-h-[95vh] flex flex-col animate-in fade-in zoom-in-95 duration-200 print:max-w-none print:border-none print:shadow-none">
 
         {/* Top Action Bar (Hidden in Print) */}
-        <div className="p-4 bg-slate-50 border-b border-gray-200 flex items-center justify-between print:hidden">
+        <div className="p-3 sm:p-4 bg-slate-50 border-b border-gray-200 flex flex-wrap items-center justify-between gap-2.5 print:hidden">
           <div className="flex items-center gap-2">
             <span className="px-2.5 py-0.5 text-xs font-bold bg-amber-100 text-amber-900 border border-amber-300 rounded-full shadow-sm flex items-center gap-1">
               <ShieldCheck className="w-3.5 h-3.5 text-amber-700" />
