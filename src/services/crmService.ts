@@ -9,7 +9,7 @@ import {
   UserSession
 } from '../types';
 import { INITIAL_CUSTOMERS, INITIAL_CONTRACTS, INITIAL_STOCK_OPNAME_RECORDS, INITIAL_CRM_NOTIFICATIONS } from '../data/mockCrmData';
-import { sendWhatsAppMessage, WHATSAPP_TARGETS } from './fonnteService';
+import { sendWhatsAppMessage, WHATSAPP_TARGETS } from './kirimiService';
 
 const STORAGE_KEYS = {
   CUSTOMERS: 'crm_standalone_customers_v1',
