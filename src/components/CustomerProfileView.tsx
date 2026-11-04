@@ -144,56 +144,62 @@ export const CustomerProfileView: React.FC<CustomerProfileViewProps> = ({
 
           {/* Customer Cards List */}
           <div className="space-y-2.5">
-            {filteredCustomers.map((c) => {
-              const isSelected = selectedCustomer?.id === c.id;
-              const customerContracts = getContractsForCustomer(c.id);
+            {filteredCustomers.length === 0 ? (
+              <div className="p-8 text-center text-xs text-slate-400 dark:text-gray-500 border border-dashed border-slate-200 dark:border-gray-800 rounded-2xl bg-white dark:bg-gray-900">
+                Belum ada data nasabah. Klik tombol "+ Tambah Nasabah" di atas untuk menambahkan nasabah baru.
+              </div>
+            ) : (
+              filteredCustomers.map((c) => {
+                const isSelected = selectedCustomer?.id === c.id;
+                const customerContracts = getContractsForCustomer(c.id);
 
-              return (
-                <div
-                  key={c.id}
-                  onClick={() => setSelectedCustomer(c)}
-                  className={`p-4 rounded-2xl border cursor-pointer transition-all ${
-                    isSelected
-                      ? 'bg-indigo-50/50 dark:bg-indigo-950/30 border-indigo-400 dark:border-indigo-600 shadow-sm ring-1 ring-indigo-400/30'
-                      : 'bg-white dark:bg-gray-900 border-slate-100 dark:border-gray-800 hover:border-slate-200 dark:hover:border-gray-700 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.03)]'
-                  }`}
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 text-white font-bold flex items-center justify-center text-xs shadow-sm ring-2 ring-white dark:ring-gray-900 shrink-0">
-                        {c.name.substring(0, 2).toUpperCase()}
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-1.5">
-                          <span className="font-bold text-xs text-slate-900 dark:text-white">
-                            {c.name}
-                          </span>
-                          <span className="text-[10px] text-slate-400 font-medium">({c.age} th)</span>
+                return (
+                  <div
+                    key={c.id}
+                    onClick={() => setSelectedCustomer(c)}
+                    className={`p-4 rounded-2xl border cursor-pointer transition-all ${
+                      isSelected
+                        ? 'bg-indigo-50/50 dark:bg-indigo-950/30 border-indigo-400 dark:border-indigo-600 shadow-sm ring-1 ring-indigo-400/30'
+                        : 'bg-white dark:bg-gray-900 border-slate-100 dark:border-gray-800 hover:border-slate-200 dark:hover:border-gray-700 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.03)]'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 text-white font-bold flex items-center justify-center text-xs shadow-sm ring-2 ring-white dark:ring-gray-900 shrink-0">
+                          {c.name.substring(0, 2).toUpperCase()}
                         </div>
-                        <div className="text-[11px] text-slate-400 dark:text-gray-500 mt-0.5">
-                          {c.occupation} · {c.phone}
+                        <div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="font-bold text-xs text-slate-900 dark:text-white">
+                              {c.name}
+                            </span>
+                            <span className="text-[10px] text-slate-400 font-medium">({c.age} th)</span>
+                          </div>
+                          <div className="text-[11px] text-slate-400 dark:text-gray-500 mt-0.5">
+                            {c.occupation} · {c.phone}
+                          </div>
                         </div>
                       </div>
+
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300">
+                        {c.creditGrade.split(' ')[0]}
+                      </span>
                     </div>
 
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300">
-                      {c.creditGrade.split(' ')[0]}
-                    </span>
-                  </div>
-
-                  <div className="mt-3 pt-2.5 border-t border-slate-100 dark:border-gray-800 flex items-center justify-between text-[11px]">
-                    <div className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400 font-bold">
-                      <Coins className="w-3.5 h-3.5" />
-                      <span>{c.totalGramsFinanced} Gram Pembiayaan</span>
-                    </div>
-                    <div className="text-slate-400 dark:text-gray-500 flex items-center gap-1 font-medium">
-                      <span>{customerContracts.length} Akad</span>
-                      <ChevronRight className="w-3.5 h-3.5" />
+                    <div className="mt-3 pt-2.5 border-t border-slate-100 dark:border-gray-800 flex items-center justify-between text-[11px]">
+                      <div className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400 font-bold">
+                        <Coins className="w-3.5 h-3.5" />
+                        <span>{c.totalGramsFinanced} Gram Pembiayaan</span>
+                      </div>
+                      <div className="text-slate-400 dark:text-gray-500 flex items-center gap-1 font-medium">
+                        <span>{customerContracts.length} Akad</span>
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })
+            )}
           </div>
         </div>
 
@@ -354,7 +360,9 @@ export const CustomerProfileView: React.FC<CustomerProfileViewProps> = ({
             </div>
           ) : (
             <div className="p-12 text-center text-slate-400 text-xs bg-white dark:bg-gray-900 rounded-3xl border border-slate-100 dark:border-gray-800">
-              Pilih nasabah dari direktori sebelah kiri.
+              {customers.length === 0
+                ? 'Belum ada nasabah terdaftar. Tambahkan nasabah untuk melihat berkas profil lengkap.'
+                : 'Pilih nasabah dari direktori sebelah kiri.'}
             </div>
           )}
         </div>
@@ -387,7 +395,7 @@ export const CustomerProfileView: React.FC<CustomerProfileViewProps> = ({
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Contoh: Ibu Aini"
+                    placeholder="Contoh: Nama Nasabah"
                     className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500/20"
                   />
                 </div>

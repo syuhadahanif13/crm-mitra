@@ -104,6 +104,18 @@ export const CrmApp: React.FC = () => {
   const [isAddTransactionModalOpen, setIsAddTransactionModalOpen] = useState(false);
   const [isBrandLogoModalOpen, setIsBrandLogoModalOpen] = useState(false);
 
+  // Bersihkan cache data mock lama saat masuk staging prod
+  useEffect(() => {
+    const legacyKeys = [
+      'crm_standalone_customers_v1',
+      'crm_standalone_contracts_v1',
+      'crm_standalone_stock_opname_v1',
+      'crm_standalone_notifications_v1',
+      'crm_imported_mitra_transactions_v1',
+    ];
+    legacyKeys.forEach((k) => localStorage.removeItem(k));
+  }, []);
+
   // Sync dark mode class
   useEffect(() => {
     if (darkMode) {

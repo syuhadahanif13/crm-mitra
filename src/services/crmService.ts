@@ -12,14 +12,35 @@ import { INITIAL_CUSTOMERS, INITIAL_CONTRACTS, INITIAL_STOCK_OPNAME_RECORDS, INI
 import { sendWhatsAppMessage, WHATSAPP_TARGETS } from './kirimiService';
 
 const STORAGE_KEYS = {
-  CUSTOMERS: 'crm_standalone_customers_v1',
-  CONTRACTS: 'crm_standalone_contracts_v1',
-  STOCK_OPNAME: 'crm_standalone_stock_opname_v1',
-  NOTIFICATIONS: 'crm_standalone_notifications_v1',
+  CUSTOMERS: 'crm_staging_customers_v2',
+  CONTRACTS: 'crm_staging_contracts_v2',
+  STOCK_OPNAME: 'crm_staging_stock_opname_v2',
+  NOTIFICATIONS: 'crm_staging_notifications_v2',
   BRAND_CONFIG: 'crm_custom_branding_v1',
-  IMPORTED_TRANSACTIONS: 'crm_imported_mitra_transactions_v1',
+  IMPORTED_TRANSACTIONS: 'crm_staging_imported_transactions_v2',
   USER_SESSION: 'crm_user_session',
   MITRA_SESSION: 'rei_mitra_session',
+};
+
+// Bersihkan data lama jika ada
+export const clearAllCrmData = (): void => {
+  try {
+    const keysToRemove = [
+      STORAGE_KEYS.CUSTOMERS,
+      STORAGE_KEYS.CONTRACTS,
+      STORAGE_KEYS.STOCK_OPNAME,
+      STORAGE_KEYS.NOTIFICATIONS,
+      STORAGE_KEYS.IMPORTED_TRANSACTIONS,
+      'crm_standalone_customers_v1',
+      'crm_standalone_contracts_v1',
+      'crm_standalone_stock_opname_v1',
+      'crm_standalone_notifications_v1',
+      'crm_imported_mitra_transactions_v1',
+    ];
+    keysToRemove.forEach((k) => localStorage.removeItem(k));
+  } catch (e) {
+    console.error('Failed to clear CRM data:', e);
+  }
 };
 
 export const PARTNER_CREDENTIALS: Array<{
@@ -228,72 +249,7 @@ export const DEFAULT_BRAND_CONFIG: CrmBrandConfig = {
   accentTheme: 'purple-indigo',
 };
 
-export const INITIAL_MITRA_TRANSACTIONS: MitraDashboardTransaction[] = [
-  {
-    id: 'trx-mitra-001',
-    invoiceNumber: 'INV-REI/2026/10/0042',
-    date: '2026-10-01',
-    partnerId: 'partner-bprs-himbarsi-01',
-    partnerName: 'BPRS Harta Insan Karimah (HIK)',
-    partnerCategory: 'BPRS',
-    customerName: 'Ibu Aini',
-    customerPhone: '081298765432',
-    customerAddress: 'Jl. Melati No. 42, RT 03/RW 05, Kebayoran Baru, Jakarta Selatan',
-    goldWeightGrams: 10,
-    totalPrice: 25625000,
-    paymentMethod: 'Pembiayaan Akad Cicilan 1 Tahun',
-    status: 'Completed',
-    source: 'Dasbor Mitra Raja Emas',
-  },
-  {
-    id: 'trx-mitra-002',
-    invoiceNumber: 'INV-REI/2026/09/0088',
-    date: '2026-09-25',
-    partnerId: 'partner-bprs-himbarsi-01',
-    partnerName: 'BPRS Harta Insan Karimah (HIK)',
-    partnerCategory: 'BPRS',
-    customerName: 'Bpk. Bambang Pamungkas',
-    customerPhone: '081288991234',
-    customerAddress: 'Jl. Mawar No. 15, Menteng, Jakarta Pusat',
-    goldWeightGrams: 5,
-    totalPrice: 12877500,
-    paymentMethod: 'Pembiayaan Akad Cicilan 6 Bulan',
-    status: 'Completed',
-    source: 'Dasbor Mitra Raja Emas',
-  },
-  {
-    id: 'trx-mitra-003',
-    invoiceNumber: 'INV-REI/2026/10/0105',
-    date: '2026-10-02',
-    partnerId: 'partner-bank-dki-syariah',
-    partnerName: 'Bank DKI Unit Usaha Syariah',
-    partnerCategory: 'Bank',
-    customerName: 'Ibu Siti Khodijah',
-    customerPhone: '081377889900',
-    customerAddress: 'Jl. Anggrek No. 8, Cilandak, Jakarta Selatan',
-    goldWeightGrams: 25,
-    totalPrice: 63937500,
-    paymentMethod: 'Pembiayaan Akad Cicilan 2 Tahun',
-    status: 'Completed',
-    source: 'Dasbor Mitra Raja Emas',
-  },
-  {
-    id: 'trx-mitra-004',
-    invoiceNumber: 'INV-REI/2026/10/0112',
-    date: '2026-10-03',
-    partnerId: 'partner-kop-syariah-212',
-    partnerName: 'Koperasi Syariah 212',
-    partnerCategory: 'Koperasi Syariah',
-    customerName: 'Bpk. Hendra Wijaya',
-    customerPhone: '081122334455',
-    customerAddress: 'Jl. Dahlia No. 12, Kelapa Gading, Jakarta Utara',
-    goldWeightGrams: 2,
-    totalPrice: 5171000,
-    paymentMethod: 'Transfer Virtual Account BSI',
-    status: 'Completed',
-    source: 'Dasbor Mitra Raja Emas',
-  },
-];
+export const INITIAL_MITRA_TRANSACTIONS: MitraDashboardTransaction[] = [];
 
 export const loadCrmBrandConfig = (): CrmBrandConfig => {
   try {

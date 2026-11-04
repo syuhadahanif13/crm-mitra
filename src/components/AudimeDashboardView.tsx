@@ -45,9 +45,7 @@ export const AudimeDashboardView: React.FC<AudimeDashboardViewProps> = ({
   const [periodTab, setPeriodTab] = useState<'Day' | 'Week' | 'Month'>('Month');
   const [currentMonth] = useState('Oktober 2026');
   const [viewStatBy, setViewStatBy] = useState<'By Tenor' | 'By Mitra'>('By Tenor');
-  const [activeSegmentTooltip, setActiveSegmentTooltip] = useState<string | null>(
-    'Akad Ibu Aini: 10g (1 Tahun) • Angsuran Rp 1.859.375/bln • Jatuh Tempo 10 Okt'
-  );
+  const [activeSegmentTooltip, setActiveSegmentTooltip] = useState<string | null>(null);
   const [sendingWaId, setSendingWaId] = useState<string | null>(null);
   const [actionFeedback, setActionFeedback] = useState<string | null>(null);
 
@@ -55,7 +53,7 @@ export const AudimeDashboardView: React.FC<AudimeDashboardViewProps> = ({
   const totalGramsFinanced = contracts.reduce((sum, c) => sum + c.goldWeightGrams, 0);
   const activeContracts = contracts.filter((c) => c.status === 'Aktif');
 
-  // Find due payments (especially Case 4: Ibu Aini 10 Oktober)
+  // Find due payments
   const dueInstallments = contracts.flatMap((contract) =>
     contract.schedule
       .filter((s) => s.status === 'Jatuh Tempo' || s.status === 'Menunggak' || s.dueDate.startsWith('2026-10'))
@@ -242,75 +240,38 @@ export const AudimeDashboardView: React.FC<AudimeDashboardViewProps> = ({
                 className="text-slate-100 dark:text-gray-800"
                 fill="none"
               />
-              {/* Segment 1: Ibu Aini 10g (Case 2) */}
-              <circle
-                cx="60"
-                cy="60"
-                r="45"
-                stroke="url(#gradient-indigo)"
-                strokeWidth="14"
-                strokeDasharray="283"
-                strokeDashoffset="170"
-                strokeLinecap="round"
-                fill="none"
-                className="cursor-pointer hover:stroke-width-[16] transition-all"
-                onClick={() =>
-                  setActiveSegmentTooltip(
-                    'Akad Ibu Aini: 10g (1 Tahun) • Angsuran Rp 1.859.375/bln • Jatuh Tempo 10 Okt'
-                  )
-                }
-              />
-              {/* Segment 2: Bambang 5g */}
-              <circle
-                cx="60"
-                cy="60"
-                r="45"
-                stroke="url(#gradient-amber)"
-                strokeWidth="14"
-                strokeDasharray="283"
-                strokeDashoffset="240"
-                strokeLinecap="round"
-                fill="none"
-                className="cursor-pointer hover:stroke-width-[16] transition-all"
-                onClick={() =>
-                  setActiveSegmentTooltip('Akad Bpk. Bambang Pamungkas: 5g (6 Bulan) • Angsuran Rp 1.721.938/bln')
-                }
-              />
-              {/* Segment 3: Siti Khodijah 25g */}
-              <circle
-                cx="60"
-                cy="60"
-                r="45"
-                stroke="url(#gradient-emerald)"
-                strokeWidth="14"
-                strokeDasharray="283"
-                strokeDashoffset="265"
-                strokeLinecap="round"
-                fill="none"
-                className="cursor-pointer hover:stroke-width-[16] transition-all"
-                onClick={() =>
-                  setActiveSegmentTooltip('Akad Ibu Siti Khodijah: 25g (2 Tahun) • Angsuran Rp 3.025.000/bln')
-                }
-              />
+              {/* Dynamic Segments */}
+              {activeContracts.length > 0 && activeContracts.slice(0, 3).map((ct, idx) => {
+                const totalFinanced = Math.max(1, totalGramsFinanced);
+                const sharePercent = ct.goldWeightGrams / totalFinanced;
+                const dashLength = Math.max(20, Math.round(sharePercent * 283));
+                const colors = ['#6366f1', '#f59e0b', '#10b981'];
+                const offsets = [283 - dashLength, 283 - dashLength * 2, 283 - dashLength * 3];
 
-              {/* Gradients */}
-              <defs>
-                <linearGradient id="gradient-indigo" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#6366f1" />
-                  <stop offset="100%" stopColor="#8b5cf6" />
-                </linearGradient>
-                <linearGradient id="gradient-amber" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#f59e0b" />
-                  <stop offset="100%" stopColor="#fbbf24" />
-                </linearGradient>
-                <linearGradient id="gradient-emerald" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#10b981" />
-                  <stop offset="100%" stopColor="#34d399" />
-                </linearGradient>
-              </defs>
+                return (
+                  <circle
+                    key={ct.id}
+                    cx="60"
+                    cy="60"
+                    r="45"
+                    stroke={colors[idx % colors.length]}
+                    strokeWidth="14"
+                    strokeDasharray="283"
+                    strokeDashoffset={Math.max(0, offsets[idx] || 0)}
+                    strokeLinecap="round"
+                    fill="none"
+                    className="cursor-pointer hover:stroke-width-[16] transition-all"
+                    onClick={() =>
+                      setActiveSegmentTooltip(
+                        `Akad ${ct.customerName}: ${ct.goldWeightGrams}g (${ct.tenorMonths} Bln) • Angsuran ${formatRupiah(ct.monthlyInstallment)}/bln`
+                      )
+                    }
+                  />
+                );
+              })}
             </svg>
 
-            {/* Center Donut Text (Like Audime: 20:43hr 9 Projects) */}
+            {/* Center Donut Text */}
             <div className="absolute flex flex-col items-center justify-center text-center">
               <span className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
                 {totalGramsFinanced} g
@@ -320,7 +281,7 @@ export const AudimeDashboardView: React.FC<AudimeDashboardViewProps> = ({
               </span>
             </div>
 
-            {/* Floating Audime Tooltip */}
+            {/* Floating Tooltip */}
             {activeSegmentTooltip && (
               <div className="absolute -bottom-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-[11px] font-medium py-1.5 px-3 rounded-xl shadow-lg border border-white/20 animate-in fade-in duration-200 max-w-[280px] text-center">
                 {activeSegmentTooltip}
@@ -329,30 +290,29 @@ export const AudimeDashboardView: React.FC<AudimeDashboardViewProps> = ({
           </div>
 
           {/* Legend row */}
-          <div className="grid grid-cols-3 gap-2 pt-4 border-t border-slate-100 dark:border-gray-800 text-center">
-            <div>
-              <div className="flex items-center justify-center gap-1.5 text-xs text-slate-500">
-                <span className="w-2.5 h-2.5 rounded-full bg-indigo-500" />
-                <span>10g Aini</span>
+          <div className="pt-4 border-t border-slate-100 dark:border-gray-800">
+            {activeContracts.length === 0 ? (
+              <div className="text-center text-xs text-slate-400 dark:text-gray-500 py-1">
+                Belum ada portofolio pembiayaan emas aktif.
               </div>
-              <div className="text-sm font-bold text-slate-800 dark:text-white mt-0.5">10 Gram</div>
-            </div>
-            <div>
-              <div className="flex items-center justify-center gap-1.5 text-xs text-slate-500">
-                <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-                <span>5g Bambang</span>
+            ) : (
+              <div className="grid grid-cols-3 gap-2 text-center">
+                {activeContracts.slice(0, 3).map((ct, idx) => {
+                  const colors = ['bg-indigo-500', 'bg-amber-500', 'bg-emerald-500'];
+                  return (
+                    <div key={ct.id}>
+                      <div className="flex items-center justify-center gap-1.5 text-xs text-slate-500 truncate">
+                        <span className={`w-2.5 h-2.5 rounded-full ${colors[idx % colors.length]} shrink-0`} />
+                        <span className="truncate">{ct.customerName.replace(/^(Ibu|Bpk\.)\s*/, '')}</span>
+                      </div>
+                      <div className="text-sm font-bold text-slate-800 dark:text-white mt-0.5">
+                        {ct.goldWeightGrams} Gram
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-              <div className="text-sm font-bold text-slate-800 dark:text-white mt-0.5">5 Gram</div>
-            </div>
-            <div>
-              <div className="flex items-center justify-center gap-1.5 text-xs text-slate-500">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                <span>Lainnya</span>
-              </div>
-              <div className="text-sm font-bold text-slate-800 dark:text-white mt-0.5">
-                {Math.max(0, totalGramsFinanced - 15)} Gram
-              </div>
-            </div>
+            )}
           </div>
         </div>
 
@@ -445,7 +405,7 @@ export const AudimeDashboardView: React.FC<AudimeDashboardViewProps> = ({
                 <span className="w-2.5 h-2.5 rounded bg-pink-400" /> Biaya Brankas
               </span>
               <span className="flex items-center gap-1.5 font-bold text-amber-600">
-                <span className="w-2.5 h-2.5 rounded bg-amber-500 ring-1 ring-amber-300" /> 10 Okt (Aini)
+                <span className="w-2.5 h-2.5 rounded bg-amber-500 ring-1 ring-amber-300" /> Jatuh Tempo
               </span>
             </div>
 
@@ -481,80 +441,81 @@ export const AudimeDashboardView: React.FC<AudimeDashboardViewProps> = ({
           </div>
 
           {/* Cards Grid (Audime Style) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {customers.slice(0, 6).map((cust) => {
-              const contract = contracts.find((c) => c.customerId === cust.id);
-              const isAiniCase = cust.name.includes('Aini');
-              const paidCount = contract?.installmentsPaid || 0;
-              const totalCount = contract?.totalInstallments || 12;
-              const percent = Math.min(100, Math.round((paidCount / totalCount) * 100));
+          {customers.length === 0 ? (
+            <div className="py-12 px-4 text-center border border-dashed border-slate-200 dark:border-gray-800 rounded-2xl flex flex-col items-center justify-center">
+              <div className="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-2">
+                <Plus className="w-5 h-5" />
+              </div>
+              <div className="text-xs font-bold text-slate-700 dark:text-gray-200">Belum ada nasabah terdaftar</div>
+              <p className="text-[11px] text-slate-400 dark:text-gray-500 mt-0.5 max-w-sm">
+                Tambahkan transaksi mandiri atau impor data transaksi mitra untuk mulai mengelola pembiayaan emas.
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {customers.slice(0, 6).map((cust) => {
+                const contract = contracts.find((c) => c.customerId === cust.id);
+                const paidCount = contract?.installmentsPaid || 0;
+                const totalCount = contract?.totalInstallments || 12;
+                const percent = Math.min(100, Math.round((paidCount / totalCount) * 100));
 
-              return (
-                <div
-                  key={cust.id}
-                  onClick={() => {
-                    onSelectCustomer(cust);
-                    if (contract) onSelectContract(contract);
-                  }}
-                  className={`p-4 rounded-2xl border transition-all cursor-pointer relative group ${
-                    isAiniCase
-                      ? 'border-indigo-300 dark:border-indigo-700 bg-indigo-50/30 dark:bg-indigo-950/20 shadow-sm'
-                      : 'border-slate-100 dark:border-gray-800 hover:border-slate-200 dark:hover:border-gray-700 bg-white dark:bg-gray-900/60'
-                  }`}
-                >
-                  {/* Avatar & Status Pill */}
-                  <div className="flex items-start justify-between gap-2 mb-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 text-white font-bold flex items-center justify-center text-sm shadow-sm ring-2 ring-white dark:ring-gray-900">
-                      {cust.name.substring(0, 2).toUpperCase()}
+                return (
+                  <div
+                    key={cust.id}
+                    onClick={() => {
+                      onSelectCustomer(cust);
+                      if (contract) onSelectContract(contract);
+                    }}
+                    className="p-4 rounded-2xl border transition-all cursor-pointer relative group border-slate-100 dark:border-gray-800 hover:border-slate-200 dark:hover:border-gray-700 bg-white dark:bg-gray-900/60"
+                  >
+                    {/* Avatar & Status Pill */}
+                    <div className="flex items-start justify-between gap-2 mb-3">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 text-white font-bold flex items-center justify-center text-sm shadow-sm ring-2 ring-white dark:ring-gray-900">
+                        {cust.name.substring(0, 2).toUpperCase()}
+                      </div>
+
+                      <span
+                        className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                          cust.status === 'Aktif'
+                            ? 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300'
+                            : 'bg-slate-100 text-slate-700 dark:bg-gray-800 dark:text-gray-300'
+                        }`}
+                      >
+                        {cust.status}
+                      </span>
                     </div>
 
-                    <span
-                      className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                        isAiniCase
-                          ? 'bg-amber-500 text-white'
-                          : cust.status === 'Aktif'
-                          ? 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300'
-                          : 'bg-slate-100 text-slate-700 dark:bg-gray-800 dark:text-gray-300'
-                      }`}
-                    >
-                      {isAiniCase ? 'Jatuh Tempo 10 Okt' : cust.status}
-                    </span>
-                  </div>
+                    {/* Name & Age */}
+                    <div className="font-bold text-slate-900 dark:text-white text-sm tracking-tight truncate">
+                      {cust.name}
+                    </div>
+                    <div className="text-[11px] text-slate-400 dark:text-gray-500 mt-0.5">
+                      {cust.age} th • {cust.occupation}
+                    </div>
 
-                  {/* Name & Age */}
-                  <div className="font-bold text-slate-900 dark:text-white text-sm tracking-tight truncate">
-                    {cust.name}
-                  </div>
-                  <div className="text-[11px] text-slate-400 dark:text-gray-500 mt-0.5">
-                    {cust.age} th • {cust.occupation}
-                  </div>
+                    {/* Gold grams & tenor */}
+                    <div className="mt-2.5 flex items-center justify-between text-xs font-semibold">
+                      <span className="text-indigo-600 dark:text-indigo-400 flex items-center gap-1">
+                        <Clock className="w-3 h-3" />
+                        {contract ? `${contract.goldWeightGrams}g (${contract.tenorMonths} bln)` : `${cust.totalGramsFinanced}g`}
+                      </span>
+                      <span className="text-slate-600 dark:text-gray-400">
+                        {paidCount}/{totalCount} bln
+                      </span>
+                    </div>
 
-                  {/* Gold grams & tenor */}
-                  <div className="mt-2.5 flex items-center justify-between text-xs font-semibold">
-                    <span className="text-indigo-600 dark:text-indigo-400 flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      {contract ? `${contract.goldWeightGrams}g (${contract.tenorMonths} bln)` : `${cust.totalGramsFinanced}g`}
-                    </span>
-                    <span className="text-slate-600 dark:text-gray-400">
-                      {paidCount}/{totalCount} bln
-                    </span>
+                    {/* Audime-style Colorful Progress Bar */}
+                    <div className="w-full h-1.5 bg-slate-100 dark:bg-gray-800 rounded-full mt-2 overflow-hidden">
+                      <div
+                        style={{ width: `${Math.max(10, percent)}%` }}
+                        className="h-full rounded-full transition-all duration-500 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"
+                      />
+                    </div>
                   </div>
-
-                  {/* Audime-style Colorful Progress Bar */}
-                  <div className="w-full h-1.5 bg-slate-100 dark:bg-gray-800 rounded-full mt-2 overflow-hidden">
-                    <div
-                      style={{ width: `${Math.max(10, percent)}%` }}
-                      className={`h-full rounded-full transition-all duration-500 ${
-                        isAiniCase
-                          ? 'bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-400'
-                          : 'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500'
-                      }`}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {/* Right Column: Members Leaves Style (Jatuh Tempo Terdekat & Pengingat WA) */}
@@ -578,77 +539,73 @@ export const AudimeDashboardView: React.FC<AudimeDashboardViewProps> = ({
             </div>
 
             {/* List of Due Reminders */}
-            <div className="space-y-3">
-              {dueInstallments.slice(0, 5).map((item) => {
-                const isAini = item.customerName.includes('Aini') && item.dueDate === '2026-10-10';
-                const key = `${item.contractId}-${item.installmentNumber}`;
-                const isSending = sendingWaId === key;
+            {dueInstallments.length === 0 ? (
+              <div className="py-12 px-4 text-center border border-dashed border-slate-200 dark:border-gray-800 rounded-2xl flex flex-col items-center justify-center">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-2">
+                  <CheckCircle2 className="w-5 h-5" />
+                </div>
+                <div className="text-xs font-bold text-slate-700 dark:text-gray-200">Tidak ada tagihan tertunggak</div>
+                <p className="text-[11px] text-slate-400 dark:text-gray-500 mt-0.5">
+                  Semua angsuran tercatat tertib dan lancar.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {dueInstallments.slice(0, 5).map((item) => {
+                  const key = `${item.contractId}-${item.installmentNumber}`;
+                  const isSending = sendingWaId === key;
 
-                return (
-                  <div
-                    key={key}
-                    className={`p-3 rounded-2xl border transition-all flex items-center justify-between gap-3 ${
-                      isAini
-                        ? 'bg-amber-50/50 dark:bg-amber-950/30 border-amber-300 dark:border-amber-800/80 shadow-sm'
-                        : 'bg-slate-50/60 dark:bg-gray-800/40 border-slate-100 dark:border-gray-800'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
-                          isAini
-                            ? 'bg-amber-500 text-white ring-2 ring-amber-200'
-                            : 'bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300'
-                        }`}
-                      >
-                        {item.customerName.substring(0, 2).toUpperCase()}
-                      </div>
-                      <div>
-                        <div className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                          {item.customerName}
-                          {isAini && (
-                            <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-amber-500 text-white">
-                              Hari Ini
-                            </span>
-                          )}
+                  return (
+                    <div
+                      key={key}
+                      className="p-3 rounded-2xl border transition-all flex items-center justify-between gap-3 bg-slate-50/60 dark:bg-gray-800/40 border-slate-100 dark:border-gray-800"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shrink-0 bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
+                          {item.customerName.substring(0, 2).toUpperCase()}
                         </div>
-                        <div className="text-[11px] text-slate-500 dark:text-gray-400">
-                          {item.goldGrams}g • {formatRupiah(item.amount)}
-                        </div>
-                        <div className="text-[10px] text-indigo-600 dark:text-indigo-400 font-semibold flex items-center gap-1">
-                          <Calendar className="w-3 h-3" /> Jatuh Tempo: {item.dueDate}
+                        <div>
+                          <div className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                            {item.customerName}
+                          </div>
+                          <div className="text-[11px] text-slate-500 dark:text-gray-400">
+                            {item.goldGrams}g • {formatRupiah(item.amount)}
+                          </div>
+                          <div className="text-[10px] text-indigo-600 dark:text-indigo-400 font-semibold flex items-center gap-1">
+                            <Calendar className="w-3 h-3" /> Jatuh Tempo: {item.dueDate}
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    {/* Action buttons */}
-                    <div className="flex items-center gap-1">
-                      <button
-                        onClick={() => handleQuickSendWa(item)}
-                        disabled={isSending}
-                        title="Kirim Pengingat Otomatis via WhatsApp Fonnte"
-                        className="p-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white transition-all shadow-sm"
-                      >
-                        <Send className="w-3.5 h-3.5" />
-                      </button>
+                      {/* Action buttons */}
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => handleQuickSendWa(item)}
+                          disabled={isSending}
+                          title="Kirim Pengingat Otomatis via WhatsApp"
+                          className="p-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white transition-all shadow-sm"
+                        >
+                          <Send className="w-3.5 h-3.5" />
+                        </button>
 
-                      <a
-                        href={getWhatsAppDirectUrl({
-                          phone: item.customerPhone,
-                          message: `Yth. ${item.customerName}, pengingat cicilan emas ${item.goldGrams}g jatuh tempo ${item.dueDate} sebesar ${formatRupiah(item.amount)}. Rekening BCA: 8694991111 A.N PT EMAS MURNI ASLI.`,
-                        })}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        title="Buka Web WhatsApp Manual"
-                        className="p-2 rounded-xl bg-slate-200 hover:bg-slate-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-slate-700 dark:text-gray-200 transition-colors"
-                      >
-                        <ExternalLink className="w-3.5 h-3.5" />
-                      </a>
+                        <a
+                          href={getWhatsAppDirectUrl({
+                            phone: item.customerPhone,
+                            message: `Yth. ${item.customerName}, pengingat cicilan emas ${item.goldGrams}g jatuh tempo ${item.dueDate} sebesar ${formatRupiah(item.amount)}. Rekening BCA: 8694991111 A.N PT EMAS MURNI ASLI.`,
+                          })}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title="Buka Web WhatsApp Manual"
+                          className="p-2 rounded-xl bg-slate-200 hover:bg-slate-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-slate-700 dark:text-gray-200 transition-colors"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5" />
+                        </a>
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           {/* Manage All Due Dates CTA */}

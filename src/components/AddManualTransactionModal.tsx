@@ -40,20 +40,20 @@ export const AddManualTransactionModal: React.FC<AddManualTransactionModalProps>
 
   // Customer Form State
   const [custName, setCustName] = useState('');
-  const [custAge, setCustAge] = useState<number>(42);
-  const [custPhone, setCustPhone] = useState('081298765432');
+  const [custAge, setCustAge] = useState<number>(35);
+  const [custPhone, setCustPhone] = useState('');
   const [custEmail, setCustEmail] = useState('');
-  const [custAddress, setCustAddress] = useState('Jakarta');
+  const [custAddress, setCustAddress] = useState('');
 
   // Installment Form State
-  const [goldWeight, setGoldWeight] = useState<number>(10); // Default to Case 2: 10 gram
-  const [tenorMonths, setTenorMonths] = useState<number>(12); // Default to Case 2: 1 tahun
+  const [goldWeight, setGoldWeight] = useState<number>(10);
+  const [tenorMonths, setTenorMonths] = useState<number>(12);
   const [goldPricePerGram, setGoldPricePerGram] = useState<number>(2562500);
   const [marginRatePercent, setMarginRatePercent] = useState<number>(6.0);
   const [dpPercent, setDpPercent] = useState<number>(20);
   const [customDp, setCustomDp] = useState<number>(5000000);
-  const [dueDateDay, setDueDateDay] = useState<number>(10); // Default 10th of each month (Case 4)
-  const [sendWaNotif, setSendWaNotif] = useState<boolean>(true); // Case 3: sehabis akad ada notif transaksi
+  const [dueDateDay, setDueDateDay] = useState<number>(10);
+  const [sendWaNotif, setSendWaNotif] = useState<boolean>(true);
 
   const [feedback, setFeedback] = useState<string | null>(null);
 
@@ -84,15 +84,15 @@ export const AddManualTransactionModal: React.FC<AddManualTransactionModalProps>
       }
     } else {
       setCustName('');
-      setCustAge(42);
-      setCustPhone('081298765432');
+      setCustAge(35);
+      setCustPhone('');
       setCustEmail('');
-      setCustAddress('Jakarta');
+      setCustAddress('');
     }
   };
 
   const handleSaveTransaction = async () => {
-    const finalCustomerName = custName.trim() || 'Ibu Aini';
+    const finalCustomerName = custName.trim() || 'Nasabah Baru';
     const contractId = `contract-man-${Date.now()}`;
     const contractNumber = `AKAD-REI/${new Date().getFullYear()}/${String(
       new Date().getMonth() + 1
@@ -274,12 +274,12 @@ export const AddManualTransactionModal: React.FC<AddManualTransactionModalProps>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
               <div>
-                <label className="block text-slate-500 font-medium mb-1">Nama Nasabah (Misal: Ibu Aini):</label>
+                <label className="block text-slate-500 font-medium mb-1">Nama Nasabah:</label>
                 <input
                   type="text"
                   value={custName}
                   onChange={(e) => setCustName(e.target.value)}
-                  placeholder="Ibu Aini"
+                  placeholder="Nama lengkap nasabah"
                   className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 rounded-xl font-medium text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
@@ -290,18 +290,18 @@ export const AddManualTransactionModal: React.FC<AddManualTransactionModalProps>
                   type="number"
                   value={custAge}
                   onChange={(e) => setCustAge(parseInt(e.target.value) || 0)}
-                  placeholder="42"
+                  placeholder="35"
                   className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 rounded-xl font-medium text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-500 font-medium mb-1">No. WhatsApp (Untuk Pengingat Fonnte):</label>
+                <label className="block text-slate-500 font-medium mb-1">No. WhatsApp:</label>
                 <input
                   type="text"
                   value={custPhone}
                   onChange={(e) => setCustPhone(e.target.value)}
-                  placeholder="081298765432"
+                  placeholder="08xxxxxxxxxx"
                   className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 rounded-xl font-medium text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
@@ -312,7 +312,7 @@ export const AddManualTransactionModal: React.FC<AddManualTransactionModalProps>
                   type="email"
                   value={custEmail}
                   onChange={(e) => setCustEmail(e.target.value)}
-                  placeholder="aini@gmail.com"
+                  placeholder="nasabah@email.com"
                   className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 rounded-xl font-medium text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500"
                 />
               </div>

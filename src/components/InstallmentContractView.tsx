@@ -190,36 +190,56 @@ export const InstallmentContractView: React.FC<InstallmentContractViewProps> = (
         </button>
       </div>
 
-      {/* Highlight Box: Cicilan 1 Tahun 10 Gram (Audime Highlight Card) */}
-      <div className="p-5 rounded-3xl bg-white dark:bg-gray-900 border border-indigo-200 dark:border-indigo-900/60 shadow-[0_4px_25px_-5px_rgba(99,102,241,0.06)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3.5">
-          <div className="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
-            <Coins className="w-5 h-5" />
-          </div>
-          <div className="text-xs">
-            <div className="flex items-center gap-2">
-              <span className="font-extrabold text-slate-900 dark:text-white">Akad Murabahah 10 Gram: Ibu Aini (42 th)</span>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-100 dark:bg-indigo-950 text-indigo-800 dark:text-indigo-300">
-                1 Tahun
-              </span>
+      {/* Highlight Box: Latest Contract or Empty Prompt */}
+      {contracts.length === 0 ? (
+        <div className="p-5 rounded-3xl bg-white dark:bg-gray-900 border border-slate-100 dark:border-gray-800 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.04)] flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <div className="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
+              <Coins className="w-5 h-5" />
             </div>
-            <p className="text-slate-500 dark:text-gray-400 mt-0.5">
-              Emas LM SNI 999.9 • DP Rp 5.000.000 • Margin syariah 6% • Angsuran Rp 1.859.375/bln (Jatuh tempo tgl 10)
-            </p>
+            <div className="text-xs">
+              <span className="font-extrabold text-slate-900 dark:text-white">Pencatatan Akad Pembiayaan Emas</span>
+              <p className="text-slate-500 dark:text-gray-400 mt-0.5">
+                Gunakan tombol "+ Buat Akad Baru" di atas untuk membuat akad baru atau gunakan fitur impor transaksi mitra.
+              </p>
+            </div>
           </div>
         </div>
+      ) : (
+        (() => {
+          const latestContract = contracts[0];
+          return (
+            <div className="p-5 rounded-3xl bg-white dark:bg-gray-900 border border-indigo-200 dark:border-indigo-900/60 shadow-[0_4px_25px_-5px_rgba(99,102,241,0.06)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-3.5">
+                <div className="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
+                  <Coins className="w-5 h-5" />
+                </div>
+                <div className="text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="font-extrabold text-slate-900 dark:text-white">
+                      Akad Terkini: {latestContract.customerName} ({latestContract.goldWeightGrams} Gram)
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-100 dark:bg-indigo-950 text-indigo-800 dark:text-indigo-300">
+                      {latestContract.tenorMonths} Bulan
+                    </span>
+                  </div>
+                  <p className="text-slate-500 dark:text-gray-400 mt-0.5">
+                    No. {latestContract.contractNumber} • DP {formatRupiah(latestContract.downPayment)} • Angsuran {formatRupiah(latestContract.monthlyInstallment)}/bln (Jatuh tempo tgl {latestContract.dueDateDay})
+                  </p>
+                </div>
+              </div>
 
-        <button
-          onClick={() => {
-            const ainiContract = contracts.find((c) => c.customerName.includes('Aini'));
-            if (ainiContract) onViewContractModal(ainiContract);
-          }}
-          className="px-4 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-slate-800 dark:text-gray-200 font-bold text-xs flex items-center gap-1.5 border border-slate-200 dark:border-gray-700 shrink-0 cursor-pointer transition-colors"
-        >
-          <Eye className="w-3.5 h-3.5" />
-          <span>Lihat Dokumen Akad</span>
-        </button>
-      </div>
+              <button
+                onClick={() => onViewContractModal(latestContract)}
+                className="px-4 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-slate-800 dark:text-gray-200 font-bold text-xs flex items-center gap-1.5 border border-slate-200 dark:border-gray-700 shrink-0 cursor-pointer transition-colors"
+              >
+                <Eye className="w-3.5 h-3.5" />
+                <span>Lihat Dokumen Akad</span>
+              </button>
+            </div>
+          );
+        })()
+      )}
 
       {/* Main Table Card (Audime Style) */}
       <div className="bg-white dark:bg-gray-900 rounded-3xl border border-slate-100 dark:border-gray-800 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.04)] overflow-hidden">
@@ -272,70 +292,68 @@ export const InstallmentContractView: React.FC<InstallmentContractViewProps> = (
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-gray-800/80">
-              {filteredContracts.map((ct) => (
-                <tr
-                  key={ct.id}
-                  className={`hover:bg-slate-50/60 dark:hover:bg-gray-800/40 transition-colors ${
-                    ct.customerName.includes('Aini') ? 'bg-amber-50/30 dark:bg-amber-950/10' : ''
-                  }`}
-                >
-                  <td className="py-3.5 px-5">
-                    <div className="font-mono font-bold text-indigo-600 dark:text-indigo-400">{ct.contractNumber}</div>
-                    <div className="text-[10px] text-slate-400">{ct.contractDate}</div>
-                  </td>
-                  <td className="py-3.5 px-4">
-                    <div className="font-bold text-slate-900 dark:text-white">{ct.customerName}</div>
-                    <div className="text-[11px] text-slate-400 dark:text-gray-500">{ct.customerAge} Th · {ct.customerPhone}</div>
-                  </td>
-                  <td className="py-3.5 px-4 text-center">
-                    <span className="font-extrabold text-amber-600 dark:text-amber-400 text-xs">
-                      {formatGrams(ct.goldWeightGrams)}
-                    </span>
-                  </td>
-                  <td className="py-3.5 px-4 text-center font-bold text-slate-700 dark:text-slate-300">
-                    {ct.tenorMonths} Bln
-                    <span className="block text-[10px] text-slate-400 font-normal">({ct.tenorMonths / 12} Thn)</span>
-                  </td>
-                  <td className="py-3.5 px-4 text-right font-semibold text-emerald-600 dark:text-emerald-400">
-                    {formatRupiah(ct.downPayment)}
-                  </td>
-                  <td className="py-3.5 px-4 text-right font-black text-slate-900 dark:text-white">
-                    {formatRupiah(ct.monthlyInstallment)}
-                  </td>
-                  <td className="py-3.5 px-4 text-center">
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300">
-                      {ct.marginRateAnnualPercent}% p.a
-                    </span>
-                  </td>
-                  <td className="py-3.5 px-4 text-center">
-                    <span className="font-bold text-slate-800 dark:text-slate-200">
-                      Tgl {ct.dueDateDay}
-                    </span>
-                    <span className="block text-[10px] text-slate-400">Next: {ct.nextDueDate}</span>
-                  </td>
-                  <td className="py-3.5 px-4 text-center">
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300">
-                      {ct.status}
-                    </span>
-                  </td>
-                  <td className="py-3.5 px-5 text-center">
-                    <button
-                      onClick={() => onViewContractModal(ct)}
-                      className="px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-slate-700 dark:text-gray-200 font-bold text-[11px] flex items-center gap-1 mx-auto transition-colors cursor-pointer border border-slate-200 dark:border-gray-700"
-                    >
-                      <FileText className="w-3.5 h-3.5" />
-                      <span>Akad</span>
-                    </button>
-                  </td>
-                </tr>
-              ))}
-
-              {filteredContracts.length === 0 && (
+              {filteredContracts.length === 0 ? (
                 <tr>
                   <td colSpan={10} className="py-12 text-center text-slate-400 text-xs">
-                    Tidak ada data akad cicilan yang sesuai.
+                    Belum ada akad pembiayaan yang tercatat.
                   </td>
                 </tr>
+              ) : (
+                filteredContracts.map((ct) => (
+                  <tr
+                    key={ct.id}
+                    className="hover:bg-slate-50/60 dark:hover:bg-gray-800/40 transition-colors"
+                  >
+                    <td className="py-3.5 px-5">
+                      <div className="font-mono font-bold text-indigo-600 dark:text-indigo-400">{ct.contractNumber}</div>
+                      <div className="text-[10px] text-slate-400">{ct.contractDate}</div>
+                    </td>
+                    <td className="py-3.5 px-4">
+                      <div className="font-bold text-slate-900 dark:text-white">{ct.customerName}</div>
+                      <div className="text-[11px] text-slate-400 dark:text-gray-500">{ct.customerAge} Th · {ct.customerPhone}</div>
+                    </td>
+                    <td className="py-3.5 px-4 text-center">
+                      <span className="font-extrabold text-amber-600 dark:text-amber-400 text-xs">
+                        {formatGrams(ct.goldWeightGrams)}
+                      </span>
+                    </td>
+                    <td className="py-3.5 px-4 text-center font-bold text-slate-700 dark:text-slate-300">
+                      {ct.tenorMonths} Bln
+                      <span className="block text-[10px] text-slate-400 font-normal">({ct.tenorMonths / 12} Thn)</span>
+                    </td>
+                    <td className="py-3.5 px-4 text-right font-semibold text-emerald-600 dark:text-emerald-400">
+                      {formatRupiah(ct.downPayment)}
+                    </td>
+                    <td className="py-3.5 px-4 text-right font-black text-slate-900 dark:text-white">
+                      {formatRupiah(ct.monthlyInstallment)}
+                    </td>
+                    <td className="py-3.5 px-4 text-center">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300">
+                        {ct.marginRateAnnualPercent}% p.a
+                      </span>
+                    </td>
+                    <td className="py-3.5 px-4 text-center">
+                      <span className="font-bold text-slate-800 dark:text-slate-200">
+                        Tgl {ct.dueDateDay}
+                      </span>
+                      <span className="block text-[10px] text-slate-400">Next: {ct.nextDueDate}</span>
+                    </td>
+                    <td className="py-3.5 px-4 text-center">
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300">
+                        {ct.status}
+                      </span>
+                    </td>
+                    <td className="py-3.5 px-5 text-center">
+                      <button
+                        onClick={() => onViewContractModal(ct)}
+                        className="px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-slate-700 dark:text-gray-200 font-bold text-[11px] flex items-center gap-1 mx-auto transition-colors cursor-pointer border border-slate-200 dark:border-gray-700"
+                      >
+                        <FileText className="w-3.5 h-3.5" />
+                        <span>Akad</span>
+                      </button>
+                    </td>
+                  </tr>
+                ))
               )}
             </tbody>
           </table>
@@ -425,7 +443,7 @@ export const InstallmentContractView: React.FC<InstallmentContractViewProps> = (
                     className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none font-bold focus:ring-2 focus:ring-indigo-500/20"
                   >
                     <option value={5}>Tanggal 5 tiap bulan</option>
-                    <option value={10}>Tanggal 10 tiap bulan (Kasus Aini)</option>
+                    <option value={10}>Tanggal 10 tiap bulan</option>
                     <option value={15}>Tanggal 15 tiap bulan</option>
                     <option value={20}>Tanggal 20 tiap bulan</option>
                     <option value={25}>Tanggal 25 tiap bulan</option>

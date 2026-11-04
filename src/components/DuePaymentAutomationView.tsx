@@ -266,60 +266,78 @@ export const DuePaymentAutomationView: React.FC<DuePaymentAutomationViewProps> =
         </div>
       </div>
 
-      {/* Due Highlight Card: Ibu Aini 10 Oktober (Audime High-Priority Card) */}
-      <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 border-2 border-amber-300 dark:border-amber-700/60 shadow-[0_4px_25px_-5px_rgba(245,158,11,0.08)]">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-400 text-white flex items-center justify-center shadow-md shadow-amber-500/30 shrink-0">
-              <Clock className="w-6 h-6" />
-            </div>
-            <div>
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="font-extrabold text-slate-900 dark:text-white text-base">
-                  Ibu Aini (42 Tahun) — Jatuh Tempo 10 Oktober 2026
-                </span>
-                <span className="px-2.5 py-0.5 text-[10px] font-bold rounded-full bg-amber-500 text-white shadow-sm">
-                  Hari Ini
-                </span>
+      {/* Due Highlight Card: Priority Alert */}
+      {(() => {
+        const urgentDueItem = allInstallments.find((i) => i.status === 'Jatuh Tempo' || i.status === 'Menunggak') || allInstallments[0];
+        if (!urgentDueItem) {
+          return (
+            <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 border border-slate-100 dark:border-gray-800 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.04)] flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                <CheckCircle2 className="w-6 h-6" />
               </div>
-              <p className="text-xs text-slate-500 dark:text-gray-400 mt-1">
-                Cicilan 10 Gram Emas LM SNI 999.9 (Akad 1 Tahun) • Angsuran ke-5 dari 12 Bulan • Mitra BPRS Harta Insan Karimah
-              </p>
-              <div className="flex flex-wrap items-center gap-4 mt-2.5 text-xs text-slate-600 dark:text-gray-300">
-                <span className="font-extrabold text-amber-600 dark:text-amber-400 flex items-center gap-1">
-                  <CreditCard className="w-3.5 h-3.5" /> Tagihan: {formatRupiah(1859375)}
-                </span>
-                <span className="flex items-center gap-1 text-slate-500">
-                  <Phone className="w-3.5 h-3.5" /> 0812-9876-5432
-                </span>
-                <span className="flex items-center gap-1 text-slate-500">
-                  <Calendar className="w-3.5 h-3.5" /> 10 Oktober 2026
-                </span>
+              <div>
+                <h3 className="font-extrabold text-slate-900 dark:text-white text-base">
+                  Semua Pembayaran Tertib & Lancar
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-gray-400 mt-0.5">
+                  Tidak ada tagihan yang tertunggak atau melewati jatuh tempo saat ini.
+                </p>
               </div>
             </div>
-          </div>
+          );
+        }
 
-          <div className="flex flex-wrap items-center gap-2 shrink-0">
-            {allInstallments.find((i) => i.customerName.includes('Aini') && i.dueDate === '2026-10-10') && (
-              <>
+        return (
+          <div className="bg-white dark:bg-gray-900 rounded-3xl p-6 border-2 border-amber-300 dark:border-amber-700/60 shadow-[0_4px_25px_-5px_rgba(245,158,11,0.08)]">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-400 text-white flex items-center justify-center shadow-md shadow-amber-500/30 shrink-0">
+                  <Clock className="w-6 h-6" />
+                </div>
+                <div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="font-extrabold text-slate-900 dark:text-white text-base">
+                      {urgentDueItem.customerName} — Tagihan Angsuran #{urgentDueItem.installmentNumber}
+                    </span>
+                    <span className={`px-2.5 py-0.5 text-[10px] font-bold rounded-full ${
+                      urgentDueItem.status === 'Menunggak'
+                        ? 'bg-rose-500 text-white'
+                        : 'bg-amber-500 text-white'
+                    } shadow-sm`}>
+                      {urgentDueItem.status}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 dark:text-gray-400 mt-1">
+                    Cicilan {urgentDueItem.goldGrams}g Emas LM • Angsuran ke-{urgentDueItem.installmentNumber} dari {urgentDueItem.totalInstallments} Bulan • Mitra {urgentDueItem.partnerName}
+                  </p>
+                  <div className="flex flex-wrap items-center gap-4 mt-2.5 text-xs text-slate-600 dark:text-gray-300">
+                    <span className="font-extrabold text-amber-600 dark:text-amber-400 flex items-center gap-1">
+                      <CreditCard className="w-3.5 h-3.5" /> Tagihan: {formatRupiah(urgentDueItem.amount)}
+                    </span>
+                    <span className="flex items-center gap-1 text-slate-500">
+                      <Phone className="w-3.5 h-3.5" /> {urgentDueItem.customerPhone}
+                    </span>
+                    <span className="flex items-center gap-1 text-slate-500">
+                      <Calendar className="w-3.5 h-3.5" /> {urgentDueItem.dueDate}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2 shrink-0">
                 <button
-                  onClick={() => {
-                    const ainiItem = allInstallments.find(
-                      (i) => i.customerName.includes('Aini') && i.dueDate === '2026-10-10'
-                    );
-                    if (ainiItem) handleSendReminder(ainiItem);
-                  }}
-                  disabled={sendingId === `${allInstallments.find((i) => i.customerName.includes('Aini'))?.contractId}-5`}
+                  onClick={() => handleSendReminder(urgentDueItem)}
+                  disabled={sendingId === `${urgentDueItem.contractId}-${urgentDueItem.installmentNumber}`}
                   className="px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 disabled:opacity-50 text-white rounded-full text-xs font-bold shadow-md shadow-emerald-500/20 flex items-center gap-1.5 transition-all"
                 >
                   <Send className="w-3.5 h-3.5" />
-                  <span>{sendingId?.includes('5') ? 'Mengirim WhatsApp...' : 'Kirim Reminder WA Otomatis'}</span>
+                  <span>{sendingId === `${urgentDueItem.contractId}-${urgentDueItem.installmentNumber}` ? 'Mengirim WhatsApp...' : 'Kirim Reminder WA Otomatis'}</span>
                 </button>
 
                 <a
                   href={getWhatsAppDirectUrl({
-                    phone: '081298765432',
-                    message: `Yth. Ibu Aini (42 th), pengingat angsuran cicilan emas 10g Raja Emas Indonesia ke-5 jatuh tempo 10 Oktober 2026 senilai Rp 1.859.375. Rekening BCA: 8694991111 A.N PT EMAS MURNI ASLI. Terima kasih.`,
+                    phone: urgentDueItem.customerPhone,
+                    message: `Yth. ${urgentDueItem.customerName}, pengingat cicilan emas ${urgentDueItem.goldGrams}g jatuh tempo ${urgentDueItem.dueDate} sebesar ${formatRupiah(urgentDueItem.amount)}. Rekening BCA: 8694991111 A.N PT EMAS MURNI ASLI. Terima kasih.`,
                   })}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -328,11 +346,11 @@ export const DuePaymentAutomationView: React.FC<DuePaymentAutomationViewProps> =
                   <ExternalLink className="w-3.5 h-3.5" />
                   <span>Buka Web WA</span>
                 </a>
-              </>
-            )}
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        );
+      })()}
 
       {/* Feedback Toast */}
       {feedbackMsg && (

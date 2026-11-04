@@ -24,13 +24,24 @@ interface StockOpnameViewProps {
   onUpdateRecord: (record: StockOpnameRecord) => void;
 }
 
+const DEFAULT_DENOMINATIONS: StockOpnameItem[] = [
+  { weightGrams: 0.5, brand: 'Raja Emas Indonesia', systemStockPcs: 0, physicalStockPcs: 0, allocatedInstallmentPcs: 0, availablePcs: 0, differencePcs: 0, differenceGrams: 0, status: 'Match', notes: 'Pecahan 0.5 gram CertiCard SNI' },
+  { weightGrams: 1, brand: 'Raja Emas Indonesia', systemStockPcs: 0, physicalStockPcs: 0, allocatedInstallmentPcs: 0, availablePcs: 0, differencePcs: 0, differenceGrams: 0, status: 'Match', notes: 'Pecahan 1 gram CertiCard SNI' },
+  { weightGrams: 2, brand: 'Raja Emas Indonesia', systemStockPcs: 0, physicalStockPcs: 0, allocatedInstallmentPcs: 0, availablePcs: 0, differencePcs: 0, differenceGrams: 0, status: 'Match', notes: 'Pecahan 2 gram CertiCard SNI' },
+  { weightGrams: 5, brand: 'Raja Emas Indonesia', systemStockPcs: 0, physicalStockPcs: 0, allocatedInstallmentPcs: 0, availablePcs: 0, differencePcs: 0, differenceGrams: 0, status: 'Match', notes: 'Pecahan 5 gram CertiCard SNI' },
+  { weightGrams: 10, brand: 'Raja Emas Indonesia', systemStockPcs: 0, physicalStockPcs: 0, allocatedInstallmentPcs: 0, availablePcs: 0, differencePcs: 0, differenceGrams: 0, status: 'Match', notes: 'Pecahan 10 gram CertiCard SNI' },
+  { weightGrams: 25, brand: 'Raja Emas Indonesia', systemStockPcs: 0, physicalStockPcs: 0, allocatedInstallmentPcs: 0, availablePcs: 0, differencePcs: 0, differenceGrams: 0, status: 'Match', notes: 'Pecahan 25 gram CertiCard SNI' },
+  { weightGrams: 50, brand: 'Raja Emas Indonesia', systemStockPcs: 0, physicalStockPcs: 0, allocatedInstallmentPcs: 0, availablePcs: 0, differencePcs: 0, differenceGrams: 0, status: 'Match', notes: 'Pecahan 50 gram CertiCard SNI' },
+  { weightGrams: 100, brand: 'Raja Emas Indonesia', systemStockPcs: 0, physicalStockPcs: 0, allocatedInstallmentPcs: 0, availablePcs: 0, differencePcs: 0, differenceGrams: 0, status: 'Match', notes: 'Pecahan 100 gram Classic Bar SNI' },
+];
+
 export const StockOpnameView: React.FC<StockOpnameViewProps> = ({
   records,
   onAddRecord,
   onUpdateRecord,
 }) => {
   const [selectedRecordId, setSelectedRecordId] = useState<string>(
-    records[0]?.id || 'so-2026-10-001'
+    records[0]?.id || ''
   );
   const [isAuditing, setIsAuditing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -40,7 +51,7 @@ export const StockOpnameView: React.FC<StockOpnameViewProps> = ({
 
   // Editable items state for audit mode
   const [auditItems, setAuditItems] = useState<StockOpnameItem[]>(
-    activeRecord ? [...activeRecord.items] : []
+    activeRecord ? [...activeRecord.items] : DEFAULT_DENOMINATIONS
   );
 
   // Sync audit items when active record changes
@@ -106,7 +117,7 @@ export const StockOpnameView: React.FC<StockOpnameViewProps> = ({
     const today = new Date().toISOString().split('T')[0];
     const initialItems: StockOpnameItem[] = activeRecord
       ? activeRecord.items.map((i) => ({ ...i, differencePcs: 0, differenceGrams: 0, status: 'Match' }))
-      : [];
+      : DEFAULT_DENOMINATIONS;
 
     const newRecord: StockOpnameRecord = {
       id: newId,
@@ -376,7 +387,7 @@ export const StockOpnameView: React.FC<StockOpnameViewProps> = ({
             <p className="text-xs text-slate-400 dark:text-gray-500 mt-0.5">
               {isAuditing
                 ? 'Mode Audit Aktif: Ubah angka di kolom "Fisik Brankas" sesuai hasil hitung fisik di khazanah.'
-                : 'Pecahan 10 gram mencakup 1 keping jaminan fidusia akad Ibu Aini (AKAD-REI/2026/08/0010).'}
+                : 'Pencatatan rincian keping emas batangan sesuai hasil hitung fisik di khazanah dan pembukuan sistem.'}
             </p>
           </div>
 
@@ -407,28 +418,35 @@ export const StockOpnameView: React.FC<StockOpnameViewProps> = ({
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-gray-800/60">
-              {filteredItems.map((item, idx) => {
-                const isTenGramCase = item.weightGrams === 10;
-                return (
-                  <tr
-                    key={item.weightGrams}
-                    className={`hover:bg-slate-50/60 dark:hover:bg-gray-800/40 transition-colors ${
-                      isTenGramCase ? 'bg-amber-50/20 dark:bg-amber-950/10' : ''
-                    }`}
-                  >
-                    {/* Weight */}
-                    <td className="py-3.5 px-5">
-                      <div className="flex items-center gap-2">
-                        <span className="px-2.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 font-bold text-xs">
-                          {formatGrams(item.weightGrams)}
-                        </span>
-                        {isTenGramCase && (
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300">
-                            Fidusia
+              {filteredItems.length === 0 ? (
+                <tr>
+                  <td colSpan={8} className="py-12 text-center text-slate-400 text-xs">
+                    Belum ada data stok pecahan brankas. Klik "Mulai Audit Fisik" untuk memasukkan data.
+                  </td>
+                </tr>
+              ) : (
+                filteredItems.map((item, idx) => {
+                  const hasAllocation = item.allocatedInstallmentPcs > 0;
+                  return (
+                    <tr
+                      key={item.weightGrams}
+                      className={`hover:bg-slate-50/60 dark:hover:bg-gray-800/40 transition-colors ${
+                        hasAllocation ? 'bg-amber-50/20 dark:bg-amber-950/10' : ''
+                      }`}
+                    >
+                      {/* Weight */}
+                      <td className="py-3.5 px-5">
+                        <div className="flex items-center gap-2">
+                          <span className="px-2.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 font-bold text-xs">
+                            {formatGrams(item.weightGrams)}
                           </span>
-                        )}
-                      </div>
-                    </td>
+                          {hasAllocation && (
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300">
+                              Fidusia ({item.allocatedInstallmentPcs} pcs)
+                            </span>
+                          )}
+                        </div>
+                      </td>
 
                     {/* Brand */}
                     <td className="py-3.5 px-4">
@@ -512,7 +530,8 @@ export const StockOpnameView: React.FC<StockOpnameViewProps> = ({
                     </td>
                   </tr>
                 );
-              })}
+              })
+            )}
             </tbody>
           </table>
         </div>
