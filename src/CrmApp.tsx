@@ -280,13 +280,6 @@ export const CrmApp: React.FC = () => {
       badgeColor: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300',
     },
     {
-      id: 'whatsapp',
-      label: 'Test WA Kirimi',
-      icon: MessageCircle,
-      badge: 'Live',
-      badgeColor: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300',
-    },
-    {
       id: 'settings',
       label: 'Logo & Brand',
       icon: Settings,
@@ -420,8 +413,6 @@ export const CrmApp: React.FC = () => {
                         setIsImportModalOpen(true);
                       } else if (item.id === 'settings') {
                         setIsBrandLogoModalOpen(true);
-                      } else if (item.id === 'whatsapp') {
-                        setIsWhatsAppModalOpen(true);
                       } else {
                         setActiveTab(item.id);
                       }
@@ -553,8 +544,6 @@ export const CrmApp: React.FC = () => {
                       setIsImportModalOpen(true);
                     } else if (item.id === 'settings') {
                       setIsBrandLogoModalOpen(true);
-                    } else if (item.id === 'whatsapp') {
-                      setIsWhatsAppModalOpen(true);
                     } else {
                       setActiveTab(item.id);
                     }
@@ -633,14 +622,14 @@ export const CrmApp: React.FC = () => {
 
           {/* Right Utilities */}
           <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
-            {/* Quick WhatsApp Test Button */}
+            {/* WhatsApp Gateway Modal Button */}
             <button
               onClick={() => setIsWhatsAppModalOpen(true)}
               className="px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-bold bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/80 flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
-              title="Uji Coba WhatsApp Gateway Kirimi.id ke 628151612592"
+              title="Pengaturan WhatsApp Gateway & API"
             >
               <MessageCircle className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-              <span className="hidden md:inline">Test WA Kirimi</span>
+              <span className="hidden md:inline">WhatsApp Gateway</span>
             </button>
 
             {/* Notification Bell */}
