@@ -21,7 +21,8 @@ import {
   CircleDot,
   Shield,
   LogOut,
-  Menu
+  Menu,
+  MessageCircle
 } from 'lucide-react';
 import {
   CustomerProfile,
@@ -54,6 +55,7 @@ import { AkadContractModal } from './components/AkadContractModal';
 import { ImportMitraModal } from './components/ImportMitraModal';
 import { AddManualTransactionModal } from './components/AddManualTransactionModal';
 import { BrandLogoEditorModal } from './components/BrandLogoEditorModal';
+import { WhatsAppTestModal } from './components/WhatsAppTestModal';
 
 const DEFAULT_SESSION: UserSession = {
   role: 'bprs',
@@ -104,6 +106,7 @@ export const CrmApp: React.FC = () => {
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isAddTransactionModalOpen, setIsAddTransactionModalOpen] = useState(false);
   const [isBrandLogoModalOpen, setIsBrandLogoModalOpen] = useState(false);
+  const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
   // Bersihkan cache data mock lama saat masuk staging prod
@@ -277,6 +280,13 @@ export const CrmApp: React.FC = () => {
       badgeColor: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300',
     },
     {
+      id: 'whatsapp',
+      label: 'Test WA Kirimi',
+      icon: MessageCircle,
+      badge: 'Live',
+      badgeColor: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300',
+    },
+    {
       id: 'settings',
       label: 'Logo & Brand',
       icon: Settings,
@@ -410,6 +420,8 @@ export const CrmApp: React.FC = () => {
                         setIsImportModalOpen(true);
                       } else if (item.id === 'settings') {
                         setIsBrandLogoModalOpen(true);
+                      } else if (item.id === 'whatsapp') {
+                        setIsWhatsAppModalOpen(true);
                       } else {
                         setActiveTab(item.id);
                       }
@@ -541,6 +553,8 @@ export const CrmApp: React.FC = () => {
                       setIsImportModalOpen(true);
                     } else if (item.id === 'settings') {
                       setIsBrandLogoModalOpen(true);
+                    } else if (item.id === 'whatsapp') {
+                      setIsWhatsAppModalOpen(true);
                     } else {
                       setActiveTab(item.id);
                     }
@@ -619,6 +633,16 @@ export const CrmApp: React.FC = () => {
 
           {/* Right Utilities */}
           <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+            {/* Quick WhatsApp Test Button */}
+            <button
+              onClick={() => setIsWhatsAppModalOpen(true)}
+              className="px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-bold bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/80 flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+              title="Uji Coba WhatsApp Gateway Kirimi.id ke 628151612592"
+            >
+              <MessageCircle className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+              <span className="hidden md:inline">Test WA Kirimi</span>
+            </button>
+
             {/* Notification Bell */}
             <button
               onClick={() => setIsNotifOpen(!isNotifOpen)}
@@ -894,6 +918,13 @@ export const CrmApp: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* WhatsApp Test & QR Pairing Modal */}
+      <WhatsAppTestModal
+        isOpen={isWhatsAppModalOpen}
+        onClose={() => setIsWhatsAppModalOpen(false)}
+        defaultPhone="628151612592"
+      />
     </div>
   );
 };

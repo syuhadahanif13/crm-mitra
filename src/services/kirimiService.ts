@@ -135,3 +135,147 @@ export async function sendWhatsAppMessage(target: string, message: string): Prom
     return false;
   }
 }
+
+/**
+ * Cek status device Kirimi saat ini
+ */
+export async function checkKirimiDeviceStatus(): Promise<{
+  success: boolean;
+  status: string;
+  isConnected: boolean;
+  deviceId: string;
+  waNumber?: string;
+  message: string;
+}> {
+  try {
+    const res = await fetch('https://api.kirimi.id/v1/list-devices', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        user_code: KIRIMI_USER_CODE,
+        secret: KIRIMI_SECRET_KEY,
+      }),
+    });
+    const data = await res.json().catch(() => null);
+
+    if (data?.success && data.data?.devices?.length > 0) {
+      const dev = data.data.devices[0];
+      const isConn = dev.status === 'connected' || dev.is_connected === true;
+      activeDeviceId = dev.device_id;
+      return {
+        success: true,
+        status: dev.status || 'unknown',
+        isConnected: isConn,
+        deviceId: dev.device_id,
+        waNumber: dev.wa_number,
+        message: data.message || 'Status device berhasil diambil',
+      };
+    }
+
+    return {
+      success: false,
+      status: 'not_found',
+      isConnected: false,
+      deviceId: DEFAULT_DEVICE_ID,
+      message: data?.message || 'Device tidak ditemukan',
+    };
+  } catch (err: any) {
+    return {
+      success: false,
+      status: 'error',
+      isConnected: false,
+      deviceId: DEFAULT_DEVICE_ID,
+      message: err.message || 'Gagal menghubungi server Kirimi.id',
+    };
+  }
+}
+
+/**
+ * Mengambil QR code pairing dari Kirimi
+ */
+export async function getKirimiQrCode(): Promise<{
+  success: boolean;
+  qrBase64?: string;
+  status?: string;
+  message: string;
+}> {
+  try {
+    const res = await fetch('https://api.kirimi.id/v1/connect-device', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        user_code: KIRIMI_USER_CODE,
+        secret: KIRIMI_SECRET_KEY,
+        device_id: activeDeviceId || DEFAULT_DEVICE_ID,
+      }),
+    });
+    const data = await res.json().catch(() => null);
+
+    if (data?.success && data.data?.qr_code?.qrBase64) {
+      return {
+        success: true,
+        qrBase64: data.data.qr_code.qrBase64,
+        status: data.data.status,
+        message: data.data.message || 'QR code berhasil dibuat',
+      };
+    }
+
+    return {
+      success: false,
+      message: data?.message || 'Gagal membuat QR code dari Kirimi',
+    };
+  } catch (err: any) {
+    return {
+      success: false,
+      message: err.message || 'Gagal memuat QR code',
+    };
+  }
+}
+
+/**
+ * Kirim pesan uji coba lengkap dengan respons status
+ */
+export async function sendKirimiTestMessage(
+  target: string,
+  message: string
+): Promise<{
+  success: boolean;
+  status: number;
+  message: string;
+  data?: any;
+}> {
+  const receiver = formatPhoneForWhatsApp(target);
+
+  try {
+    const deviceId = await getActiveDeviceId();
+
+    const payload = {
+      user_code: KIRIMI_USER_CODE,
+      secret: KIRIMI_SECRET_KEY,
+      device_id: deviceId,
+      receiver,
+      message,
+    };
+
+    const response = await fetch(KIRIMI_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await response.json().catch(() => null);
+
+    return {
+      success: response.ok && data?.success,
+      status: response.status,
+      message: data?.message || (response.ok ? 'Pesan terkirim' : 'Gagal mengirim pesan'),
+      data,
+    };
+  } catch (err: any) {
+    return {
+      success: false,
+      status: 500,
+      message: err.message || 'Terjadi kesalahan jaringan',
+    };
+  }
+}
