@@ -49,15 +49,15 @@ export const PARTNER_CREDENTIALS: Array<{
   session: UserSession;
 }> = [
   {
-    email: 'admin@bprs.local',
-    passwords: ['admin123', 'admin123', 'mitra123'],
+    email: (import.meta as any).env?.VITE_ADMIN_EMAIL || 'admin@bprs.local',
+    passwords: [(import.meta as any).env?.VITE_ADMIN_PASSWORD || 'admin123', 'mitra123'],
     session: {
       role: 'admin',
       partnerId: 'rei-hq-admin',
       partnerName: 'PT Emas Murni Asli (HQ)',
       partnerCategory: 'Bank',
       name: 'Super Admin Raja Emas',
-      email: 'admin@bprs.local',
+      email: (import.meta as any).env?.VITE_ADMIN_EMAIL || 'admin@bprs.local',
       discountBalance: 50000000,
       pointsBalance: 2500,
     },
